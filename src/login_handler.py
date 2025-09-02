@@ -47,12 +47,12 @@ class LoginHandler:
         base_dir = os.path.dirname(os.path.abspath(__file__))
 
         with open(
-                os.path.join(
-                    base_dir,
-                    LoginHandler.TEXT_FILES_DIR_NAME,
-                    LoginHandler.USER_INFO_FILE_NAME,
-                ),
-                "r",
+            os.path.join(
+                base_dir,
+                LoginHandler.TEXT_FILES_DIR_NAME,
+                LoginHandler.USER_INFO_FILE_NAME,
+            ),
+            "r",
         ) as f:
             if self.use_neopass:
                 self.neopass_email = f.readline()
@@ -120,7 +120,7 @@ class LoginHandler:
             self.NEOPASS_CONTINUE_BUTTON_LOCATOR
         )
         with account_selection_tab.expect_navigation(
-                wait_until="domcontentloaded", timeout=30000
+            wait_until="domcontentloaded", timeout=30000
         ):
             continue_button.click()
 
@@ -151,7 +151,7 @@ class LoginHandler:
             self.TRADITIONAL_SIGN_IN_LOCATOR
         )
         with self.neopets_page.page_instance.expect_navigation(
-                wait_until="domcontentloaded", timeout=30000
+            wait_until="domcontentloaded", timeout=30000
         ):
             sign_in_button.click()
         logger.info(

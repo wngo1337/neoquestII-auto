@@ -17,8 +17,22 @@ class PageParser:
 
     OVERWORLD_IDENTIFIER = {"name": "navmap"}
 
+    # Seems fragile, but these haven't changed in like a decade, so I don't expect it to now
+    BATTLE_START_IDENTIFIER = {
+        "src": "//images.neopets.com/nq2/x/com_begin.gif",
+        "alt": "Begin the Fight!",
+    }
+
     @staticmethod
-    def parse_html(page_html: str) -> PageType:
+    def get_page_type(page_html: str) -> PageType:
+        """
+        This method parses the given page HTML and walks through a series of unique page identifiers.
+        It uses the page identifier to determine which page the user is on.
+
+        Mainly meant to be used in combination with PageFactory class to return the proper page object.
+        :param page_html:
+        :return: enum value containing the specific page type
+        """
         # Read into bs object
         # Check for presence of specific elements unique to the page
         soup = BeautifulSoup(page_html, "html.parser")
@@ -30,7 +44,10 @@ class PageParser:
             return PageType.TRADITIONAL_LOGIN
         elif PageParser.is_home_page(soup):
             return PageType.HOME
-
+        elif PageParser.is_overworld_page(soup):
+            return PageType.GAME_OVERWORLD
+        elif PageParser.is_battle_start_page(soup):
+            return PageType.GAME_BATTLE_START
         else:
             # Extremely dumb, just want to see though
             return PageType.UNRECOGNIZED
@@ -56,3 +73,8 @@ class PageParser:
     def is_overworld_page(soup: BeautifulSoup) -> bool:
         navigation_map_tag = soup.find(attrs=PageParser.OVERWORLD_IDENTIFIER)
         return navigation_map_tag is not None
+
+    @staticmethod
+    def is_battle_start_page(soup: BeautifulSoup) -> bool:
+        begin_battle_tag = soup.find(attrs=PageParser.BATTLE_START_IDENTIFIER)
+        return begin_battle_tag is not None

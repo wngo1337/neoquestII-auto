@@ -1,4 +1,6 @@
+from __future__ import annotations
 from enum import Enum
+from playwright.sync_api import Page, Locator
 
 from .neopets_page import NeopetsPage
 
@@ -28,8 +30,12 @@ class OverworldPage(NeopetsPage):
     NORMAL_MODE_LOCATOR = r"a[href='nq2.phtml?act=travel&mode=1']"
     HUNTING_MODE_LOCATOR = r"a[href='nq2.phtml?act=travel&mode=2']"
 
-    def __init__(self, neopets_page: NeopetsPage):
-        super().__init__(neopets_page.page_instance)
+    INVENTORY_LOCATOR = r"a[href='nq2.phtml?act=inv']"
+
+    OPTIONS_LOCATOR = r"a[href='nq2.phtml?act=opt']"
+
+    def __init__(self, neopets_page_instance: Page):
+        super().__init__(neopets_page_instance)
 
         # Instance variables: actual element handles referencing the DOM elements
 
@@ -45,6 +51,11 @@ class OverworldPage(NeopetsPage):
 
         self.normal_mode_button = self.page_instance.locator(self.NORMAL_MODE_LOCATOR)
         self.hunting_mode_button = self.page_instance.locator(self.HUNTING_MODE_LOCATOR)
+
+        self.inventory_button = self.page_instance.locator(
+            OverworldPage.INVENTORY_LOCATOR
+        )
+        self.options_button = self.page_instance.locator(OverworldPage.OPTIONS_LOCATOR)
 
         # # Optionally create a mapping for easy lookup by direction name
         # self.direction_buttons = {
@@ -69,37 +80,46 @@ class OverworldPage(NeopetsPage):
             8: self.southeast_button,
         }
 
-    def click_direction(self, direction: int) -> NeopetsPage:
+    def click_direction(self, direction: int) -> None:
+        """
+        Click a direction button corresponding to the int that was passed in.
+        Travel can result in either another overworld page, or a battle start page if a random encounter occurs.
+        :param direction:
+        """
         # Map direction string or enum to the corresponding locator
         direction_button = self.int_to_direction_button[direction]
-        if direction_button:
+        if direction_button.count() > 0:
             # Need this context manager otherwise, Playwright's dispatch_event can't tell when page is ready to click again
             with self.page_instance.expect_navigation():
-                # direction_button.dispatch_event("click")
-                # # logger.info(
-                # #     f"Attempting to move {direction_selector} and waiting for page load..."
-                # # )
-                # self.page_instance.wait_for_load_state("load")
                 self.simulate_click_with_wait(direction_button)
         else:
             raise ValueError(f"Invalid direction for path direction: {direction}")
 
-        return NeopetsPage(self.page_instance)
+    def click_normal_movement_button(self) -> None:
+        self.click_clickable_element(
+            self.normal_mode_button,
+            "Could not click the normal mode button. This can happen if you were already in normal mode.",
+        )
 
-    def click_normal_movement_button(self) -> NeopetsPage:
-        if self.normal_mode_button:
-            self.normal_mode_button.click()
-        else:
-            logger.info(
-                "Could not click the normal mode button. This can happen if you were already in normal mode."
-            )
-        return NeopetsPage(self.page_instance)
+    def click_hunting_movement_button(self) -> None:
+        self.click_clickable_element(
+            self.hunting_mode_button,
+            "Could not click the hunting mode button. This can happen if you were already in hunting mode.",
+        )
 
-    def click_hunting_movement_button(self) -> NeopetsPage:
-        if self.hunting_mode_button:
-            self.hunting_mode_button.click()
-        else:
-            logger.info(
-                "Could not click the hunting mode button. This can happen if you were already in hunting mode."
-            )
-        return NeopetsPage(self.page_instance)
+    def click_inventory_button(self) -> None:
+        """
+        This method clicks the inventory button
+        :return: a Page reference to the resulting inventory page
+        """
+
+        self.click_clickable_element(
+            self.inventory_button,
+            "We were unable to click the inventory button. Ensure that you are on the overworld.",
+        )
+
+    def click_options_button(self) -> None:
+        self.click_clickable_element(
+            self.options_button,
+            "We were unable to click the options button. Ensure that you are on the overworld.",
+        )
