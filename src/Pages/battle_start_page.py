@@ -1,5 +1,7 @@
 from __future__ import annotations
 from enum import Enum
+from typing import List
+
 from playwright.sync_api import Page, Locator
 
 from .neopets_page import NeopetsPage

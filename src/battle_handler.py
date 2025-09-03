@@ -5,7 +5,8 @@ from Pages.neopets_page import NeopetsPage
 from Pages.battle_page import BattlePage
 from Pages.battle_start_page import BattleStartPage
 
-from typing import Optional
+from potion_handler import PotionHandler
+from typing import Optional, Dict, List
 
 logger = logging.getLogger(__name__)
 
@@ -17,8 +18,8 @@ logger = logging.getLogger(__name__)
 def does_need_healing(current_hp: int, max_hp: int) -> bool:
     """
     Evaluates a character's HP status and determines if they require potion healing
-    :param current_hp: current character HP
-    :param max_hp: max character HP
+    :param current_hp: character current HP
+    :param max_hp: character max HP
     :return: True if HP ratio is below threshold, else False
     """
     return current_hp / max_hp < 0.55
@@ -92,41 +93,31 @@ class BattleHandler:
         # Melee haste + crit is the standard build
 
         # WE CAN'T MOVE FORWARD UNTIL WE FIND A WAY TO EXTRACT THE HP VALUES!!!
-        pass
+        hp_vals = self.battle_page.get_character_hp_vals()["Rohane"]
+        # if does_need_healing(hp_vals["current_hp"], hp_vals["max_hp"]):
+        #     """
+        #     Target = -1
+        #     fact = 5
+        #     parm =
+        #     use_id = WHATEVER POTION IS
+        #     nxactor = ACTOR ID!!!
+        #     """
+        ranked_potions = PotionHandler.get_best_potions_by_efficiency(
+            hp_vals["current_hp"], hp_vals["max_hp"]
+        )
 
-    # def get_player_turn_type(self) -> BattlePage.AllyTurnType:
-    #     """
-    #     Parse the page HTML for unique identifiers to determine which specific ally's turn it is.
-    #     Assumes that it is the player's turn already.
-    #     :return: Enum value representing the ally whose turn it is.
-    #     """
-    #
-    #     # I think we can basically just look for bolded name text
-    #     soup = BeautifulSoup(self.battle_page.get_page_content(), "html.parser")
-    #
-    #     turn_type = self.battle_page.get_turn_type()
-    #     if turn_type != BattlePage.TurnType.PLAYER:
-    #         logger.error(
-    #             "The method was called on the enemy's turn instead of an ally's turn!"
-    #         )
-    #         raise Exception(
-    #             "Yeah something went wrong when trying to determine the ally's turn."
-    #         )
-    #
-    #     rohane_turn_tag = soup.find(BattleHandler.ROHANE_TURN_IDENTIFIER)
-    #     mipsy_turn_tag = soup.find(BattleHandler.MIPSY_TURN_IDENTIFIER)
-    #     talinia_turn_tag = soup.find(BattleHandler.TALINIA_TURN_IDENTIFIER)
-    #     velm_turn_tag = soup.find(BattleHandler.VELM_TURN_IDENTIFIER)
-    #
-    #     if rohane_turn_tag:
-    #         return BattlePage.AllyTurnType.ROHANE
-    #     elif mipsy_turn_tag:
-    #         return BattlePage.AllyTurnType.MIPSY
-    #     elif talinia_turn_tag:
-    #         return BattlePage.AllyTurnType.TALINIA
-    #     elif velm_turn_tag:
-    #         return BattlePage.AllyTurnType.VELM
-    #     else:
-    #         raise Exception(
-    #             "It is an ally's turn, but the program could not determine whose turn it is!"
-    #         )
+        available_potions = self.battle_page.get_available_healing_potions()
+        available_potions_lowercase = [
+            potion_name.lower() for potion_name in available_potions
+        ]
+
+        best_potion_id = -1
+        for potion_id, potion_name in ranked_potions:
+            if potion_name.lower() in available_potions_lowercase:
+                best_potion_id = potion_id
+                break
+
+        formatted_healing_url = BattleHandler.PLAYER_TURN_URL_TEMPLATE.format(
+            -1, 5, "", best_potion_id, 1
+        )
+        print(f"We would go to url: {formatted_healing_url}")

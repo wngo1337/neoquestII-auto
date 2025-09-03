@@ -5,8 +5,9 @@ from bs4 import BeautifulSoup
 from playwright.sync_api import Page
 
 from .neopets_page import NeopetsPage
+from src.potion_handler import PotionHandler
 
-from typing import Tuple
+from typing import Dict, List
 
 
 class BattlePage(NeopetsPage):
@@ -90,13 +91,14 @@ class BattlePage(NeopetsPage):
         else:
             raise Exception("Could not find nxactor hidden input on the battle page.")
 
-    def get_character_hp_vals(self) -> Tuple[int, int]:
+    def get_character_hp_vals(self) -> Dict[str, Dict[str, int]]:
         battle_html = self.page_instance.content()
         soup = BeautifulSoup(battle_html, "html.parser")
         game_container = soup.find("div", class_="contentModule phpGamesNonPortalView")
 
         # Ensure that we do not assign the same character name to multiple HP values
         added_chars = {}
+        ally_hp_info = {}
 
         # Basically two numerical values separate by a slash
         hp_pattern = re.compile(r"^\d+/\d+$")
@@ -128,9 +130,14 @@ class BattlePage(NeopetsPage):
                 if turn_type == BattlePage.TurnType.PLAYER:
                     # Text will be further inside a bold tag, but the container doesn't contain any other text
                     character_name_tag = parent_td.find(
-                        "b", string=BattlePage.ALLY_NAMES, recursive=False
+                        "b", string=BattlePage.ALLY_NAMES, recursive=True
                     )
-                    character_name = character_name_tag.get_text().strip()
+                    # Character names are in the same td element as the HP text
+                    # Monster names are not
+                    if character_name_tag:
+                        character_name = character_name_tag.get_text().strip()
+                    else:
+                        character_name = "NOT_A_NAME"
                 else:
                     # If not our turn, then text will simply be inside the td tag
                     character_name_tag = parent_td
@@ -138,29 +145,36 @@ class BattlePage(NeopetsPage):
                         string=BattlePage.ALLY_NAMES, recursive=False
                     )
 
-                    # if character_name_tag:
-                    #     character_name = character_name_tag.get_text().strip()
-
-                    # For some reason, enemy names are in a totally separate tr (not even a td) element from their HP
-
-                    # Track characters already added to avoid duplicates
-                    # For each candidate, ensure its text matches a real character name and hasn't been added already
-                    if (
-                            character_name in BattlePage.ALLY_NAMES
-                            and character_name not in added_chars
-                    ):
-                        print(
-                            f"Adding entry to character list: {character_name} - {raw_hp_text}"
-                        )
-                        hp_vals = raw_hp_text.split("/")
-                        current_hp = int(hp_vals[0])
-                        max_hp = int(hp_vals[1])
-                        added_chars[character_name] = {
-                            "current_hp": current_hp,
-                            "max_hp": max_hp,
-                        }
-                        # break
-
+                if (
+                        character_name in BattlePage.ALLY_NAMES
+                        and character_name not in added_chars.keys()
+                ):
+                    print(
+                        f"Adding entry to character list: {character_name} - {raw_hp_text}"
+                    )
+                    hp_vals = raw_hp_text.split("/")
+                    current_hp = int(hp_vals[0])
+                    max_hp = int(hp_vals[1])
+                    added_chars[character_name] = {
+                        "current_hp": current_hp,
+                        "max_hp": max_hp,
+                    }
+                    # break
         print("These are the allies we see on the page:")
         print(added_chars)
-        # DON'T FORGET TO PARSE THE RAW HP TEXT SO WE CAN ACTUALLY USE THEM!
+
+        return added_chars
+
+    def get_available_healing_potions(self) -> List[str]:
+        """
+        Read through the page HTML and check if each potion name is in the page.
+        :return: list of potion names available to use
+        """
+
+        page_html = self.get_page_content()
+        # NOW CHECK IF EACH POTION IS IN THE STRING!!!
+        available_potions = []
+        for potion_id, (potion_name, heal_val) in PotionHandler.POTIONS.items():
+            if potion_name in page_html:
+                available_potions.append(potion_name)
+        return available_potions
