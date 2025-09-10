@@ -21,16 +21,6 @@ class BattleStartPage(NeopetsPage):
             BattleStartPage.BATTLE_START_LOCATOR
         )
 
-    def is_battle_start(self) -> bool:
-        """
-        Method to determine how to initialize the battle handler depending on if battle is in progress or starting.
-        :return: True if we are actually on a battle start page, else False
-        """
-        if self.start_battle_button.count() > 0:
-            return True
-        else:
-            return False
-
     def click_start_battle_button(self) -> None:
         """
         Click the starts battle button to enter the battle.
@@ -41,3 +31,6 @@ class BattleStartPage(NeopetsPage):
             self.start_battle_button,
             "We were unable to click the start battle button. Ensure that you are on a battle start page!",
         )
+
+    # NEED TO FIX THIS METHOD IN THE RARE CASE THAT THE PAGE FAILS TO LOAD
+    # IF THE PAGE NAVIGATION ACTUALLY GOES THROUGH, BUT WE TRY TO RELOAD THE PAGE, WE GET A PAGE WE DON'T RECOGNIZE?

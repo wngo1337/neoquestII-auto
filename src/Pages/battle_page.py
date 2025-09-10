@@ -29,9 +29,14 @@ class BattlePage(NeopetsPage):
     DO_NOTHING_FIVE_SEC_LOCATOR = r"img[src='//images.neopets.com/nq2/x/5s.gif']"
 
     # LOCATOR FOR BATTLE END
-    END_FIGHT_LOCATOR = r"[src='//images.neopets.com/nq2/x/com_end.gif']"
+    END_FIGHT_LOCATOR = r"img[src='//images.neopets.com/nq2/x/com_end.gif']"
 
     ALLY_NAMES = ["Rohane", "Mipsy", "Talinia", "Velm"]
+
+    # You cannot attack that target, for it has already been defeated!
+    ALREADY_DEFEATED_TARGET_TEXT = "for it has already been defeated"
+    INVALID_CASTING_TARGET_TEXT = "You must select a valid target to cast on!"
+    # Also need one for casting a spell on invalid target
 
     class TurnType(Enum):
         ENEMY = auto()
@@ -71,6 +76,7 @@ class BattlePage(NeopetsPage):
         elif self.END_FIGHT_IDENTIFIER.count() > 0:
             return BattlePage.TurnType.BATTLE_OVER
         else:
+
             # TODO: return a more specific exception
             raise Exception(
                 "It is neither the player or enemy's turn. You are likely not on a battle page!"
@@ -178,3 +184,16 @@ class BattlePage(NeopetsPage):
             if potion_name in page_html:
                 available_potions.append(potion_name)
         return available_potions
+
+    def has_attacked_invalid_target(self) -> bool:
+        """
+        Determine if the battle page indicates that the player has attacked a defeated or otherwise invalid target.
+
+        This method is usually called after using an attack or targeted spell.
+        :return:
+        """
+        page_html = self.get_page_content()
+        if BattlePage.ALREADY_DEFEATED_TARGET_TEXT in page_html or BattlePage.INVALID_CASTING_TARGET_TEXT in page_html:
+            return True
+        else:
+            return False

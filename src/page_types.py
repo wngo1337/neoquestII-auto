@@ -6,7 +6,7 @@ class PageType(Enum):
     HOME = auto()
     NEOPASS_LOGIN = auto()
     NEOPASS_ACCOUNT_VIEW = auto()
-    NEOPASS_ACCOUNT_SELECTION = ()
+    NEOPASS_ACCOUNT_SELECTION = auto()
     TRADITIONAL_LOGIN = auto()
 
     # Game navigation pages

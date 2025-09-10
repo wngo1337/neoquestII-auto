@@ -1,5 +1,9 @@
 from __future__ import annotations
+
+import re
 from enum import Enum
+from typing import List
+
 from playwright.sync_api import Page, Locator
 
 from .neopets_page import NeopetsPage
@@ -14,8 +18,14 @@ class OverworldPage(NeopetsPage):
     Page object model representing the NeoQuest II overworld page.
     Holds element locators and keeps references to UI buttons
     """
+    
+    SWITCH_NORMAL_NODE_URL = r"https://www.neopets.com/games/nq2/nq2.phtml?act=travel&mode=1"
+    SWITCH_HUNTING_MODE_URL = r"https://www.neopets.com/games/nq2/nq2.phtml?act=travel&mode=2"
+    
+    MAIN_GAME_URL = r"https://www.neopets.com/games/nq2/nq2.phtml"
 
-    NAVIGATION_BUTTONS_GRID_LOCATOR = "div.contentModule.phpGamesNonPortalView"
+    GAME_CONTAINER_LOCATOR = "div.phpGamesNonPortalView"
+    NAVIGATION_BUTTONS_GRID_LOCATOR = r"img[src='//images.neopets.com/nq2/x/nav.gif']"
 
     # Class variables: selectors for elements - shared by all instances
     NORTH_LOCATOR = 'area[alt="North"]'
@@ -69,29 +79,30 @@ class OverworldPage(NeopetsPage):
         #     "southeast": self.southeast_button,
         # }
 
-        self.int_to_direction_button = {
-            1: self.north_button,
-            2: self.south_button,
-            3: self.west_button,
-            4: self.east_button,
-            5: self.northwest_button,
-            6: self.southwest_button,
-            7: self.northeast_button,
-            8: self.southeast_button,
+        self.str_to_direction_button = {
+            "1": self.north_button,
+            "2": self.south_button,
+            "3": self.west_button,
+            "4": self.east_button,
+            "5": self.northwest_button,
+            "6": self.southwest_button,
+            "7": self.northeast_button,
+            "8": self.southeast_button,
         }
 
-    def click_direction(self, direction: int) -> None:
+    def click_direction(self, direction: str) -> None:
         """
         Click a direction button corresponding to the int that was passed in.
         Travel can result in either another overworld page, or a battle start page if a random encounter occurs.
         :param direction:
         """
+        # Get the current overworld map's page HTML
+        map_coords = self.get_map_coords()
+
         # Map direction string or enum to the corresponding locator
-        direction_button = self.int_to_direction_button[direction]
+        direction_button = self.str_to_direction_button[direction]
         if direction_button.count() > 0:
-            # Need this context manager otherwise, Playwright's dispatch_event can't tell when page is ready to click again
-            with self.page_instance.expect_navigation():
-                self.simulate_click_with_wait(direction_button)
+            self.simulate_click_with_wait(direction_button, prev_map_coords=map_coords)
         else:
             raise ValueError(f"Invalid direction for path direction: {direction}")
 
@@ -123,3 +134,51 @@ class OverworldPage(NeopetsPage):
             self.options_button,
             "We were unable to click the options button. Ensure that you are on the overworld.",
         )
+        
+    def simulate_click_with_wait(self, unclickable_element: Locator, num_retries=6, prev_map_coords: List[str] = None) -> None:
+        """
+        This method handles elements that perform Javascript calls when clicked physically, but NOT VIA PLAYWRIGHT.
+        It sends a click event and then waits for a page reload to occur to ensure that the action has finished.
+        :param unclickable_element: some element that is interactable only because of an overlaying element,
+         and isn't clickable via Playwright
+        """
+        for attempt in range(0, num_retries):
+            try:
+                with self.page_instance.expect_navigation():
+                    unclickable_element.dispatch_event("click")
+                    logger.info(
+                        "Attempting to interact with an element that Playwright cannot click normally..."
+                    )
+                    self.page_instance.wait_for_load_state("load")
+                return
+            except Exception as e:
+                logger.warning(f"Attempt {attempt} failed: {e}")
+                try:
+                    logger.info("Attempting to reload the page and determine the result")
+                    self.page_instance.goto("about:blank")
+                    self.page_instance.goto(OverworldPage.MAIN_GAME_URL)
+                    self.page_instance.wait_for_load_state("load")
+                    new_map_coords = self.get_map_coords()
+                    # Not sure if this check fails when the page actually loaded but took us to a battle page - might be ok
+                    if set(prev_map_coords) == set(new_map_coords):
+                        logger.info("The previous movement action did not go through. Resubmitting action...")
+                        # Then redo the action since it didn't go through
+                        continue
+                    else:
+                        logger.info("The page failed to load but the action was performed.")
+                        return
+                except Exception as reload_error:
+                    logger.warning(f"Also failed to reload the page after failed simulated click: {reload_error}")
+        logger.error(f"Failed to interact with the element after {num_retries} attempts.")
+        raise Exception("Max retries exceeded for simulate_click_with_wait")
+
+    # Utility method to compare if page is the same
+    def get_map_coords(self) -> List[str]:
+        """
+        Get the raw HTML of the overworld map for comparison against another overworld map HTML.
+        """
+        container = self.page_instance.locator(OverworldPage.GAME_CONTAINER_LOCATOR)
+        map_tbody = container.locator('tbody').nth(4)  # 0-based index, so 4 is the fifth tbody
+        map_html = map_tbody.inner_html()
+        coords_matches = re.findall(r"coords\((.*?)\)", map_html)
+        return coords_matches
