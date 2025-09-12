@@ -91,7 +91,18 @@ def main(use_neopass: bool) -> None:
         # THIS METHOD DOESN'T HAVE THE FIGHTING OF THE MINER FOREMAN YET!!!
         # launcher.autoplayer.complete_act1_step1_training()
         # launcher.autoplayer.complete_act1_step2_miner_foreman()
-        launcher.autoplayer.complete_act1_step3_zombom()
+        # launcher.autoplayer.complete_act1_step3_zombom()
+        # launcher.autoplayer.complete_act1_step4_sand_grundo()
+        # launcher.autoplayer.complete_act1_step6_ramtor2()
+        # launcher.autoplayer.complete_act2_leximp_and_walk_cave()
+        # launcher.autoplayer.complete_act2_caves_of_terror()
+        # launcher.autoplayer.complete_act2_kolvars_and_grind()
+        # launcher.autoplayer.complete_act2_scuzzy()
+        # launcher.autoplayer.complete_act3_siliclast()
+        # launcher.autoplayer.complete_act3_gebarn()
+        launcher.autoplayer.complete_act3_revenant()
+
+        context.close()
 
         # coords = launcher.autoplayer.overworld_handler.get_overworld_map_coordinates()
         # launcher.autoplayer.overworld_handler.overworld_page.page_instance.reload()

@@ -26,6 +26,7 @@ class OverworldHandler:
         SOUTHEAST = "8"
 
     # Map each direction to its corresponding CSS selector
+    # I WANTED TO USE THESE BUT THEY JUST AREN'T AS RELIABLE
     DIRECTION_TO_LOCATOR = {
         Direction.NORTH: 'area[alt="North"]',
         Direction.SOUTH: 'area[alt="South"]',
@@ -70,7 +71,9 @@ class OverworldHandler:
         #
         #     self.neopets_page.browser_page.wait_for_load_state("load")
         # return self.neopets_page
-        self.overworld_page.click_direction(direction)
+        map_coords = self.get_overworld_map_coordinates()
+        movement_url = OverworldPage.MOVEMENT_URL_TEMPLATE.format(direction)
+        self.overworld_page.go_to_movement_url_with_wait(movement_url, prev_map_coords=map_coords)
         if self.is_overworld():
             return self.overworld_page
         else:

@@ -26,7 +26,7 @@ class Autoplayer:
     login_handler: LoginHandler
     overworld_handler: OverworldHandler
     battle_handler: BattleHandler
-    skillpoint_spender: SkillpointHandler
+    skillpoint_handler: SkillpointHandler
     inventory_handler: InventoryHandler
 
     current_page: NeopetsPage
@@ -59,7 +59,7 @@ class Autoplayer:
         #         self.battle_handler.end_battle()
         self.npc_handler = NpcHandler(self.current_page)
         # THIS IS NOT INITIALIZED ON THE CORRECT PAGE!!!
-        self.skillpoint_spender = SkillpointHandler(self.current_page)
+        self.skillpoint_handler = SkillpointHandler(self.current_page)
         self.inventory_handler = InventoryHandler()
 
     logger.info("Successfully created all autoplayer components!")
@@ -151,8 +151,8 @@ class Autoplayer:
             if self.overworld_handler.is_overworld():
                 # Every 15 battles, try to spend a skillpoint for easier progress
                 if num_steps % 15 == 0:
-                    self.skillpoint_spender.try_spend_skillpoint(SkillpointHandler.AllyType.ROHANE,
-                                                                                SkillpointHandler.RohaneSkill.MELEE_HASTE.value)
+                    self.skillpoint_handler.try_spend_skillpoint(SkillpointHandler.AllyType.ROHANE,
+                                                                 SkillpointHandler.RohaneSkill.MELEE_HASTE.value)
                 if num_steps <= 30:
                     # We are super weak and need to go back home to heal
                     # On iteration 30 after incrementing above, we want to do the town loop one more time
@@ -174,7 +174,7 @@ class Autoplayer:
         self.grind_battles(100)
 
         for i in range(0, 2):
-            self.skillpoint_spender.try_spend_skillpoint(SkillpointHandler.AllyType.ROHANE, SkillpointHandler.RohaneSkill.MELEE_HASTE.value)
+            self.skillpoint_handler.try_spend_skillpoint(SkillpointHandler.AllyType.ROHANE, SkillpointHandler.RohaneSkill.MELEE_HASTE.value)
 
         self.follow_path("882282288884444447444477777777771777448488226663666266222222226662222266333333333336333336666662")
         # At this point, you are one tile ABOVE the Miner Foreman!
@@ -187,7 +187,7 @@ class Autoplayer:
         # The Underground Cave drops close to zero potions for some reason
         # Get as close as we can to level 11 as possible before moving on
         self.grind_battles(300, "7777")
-        self.skillpoint_spender.try_spend_skillpoint(SkillpointHandler.AllyType.ROHANE, SkillpointHandler.RohaneSkill.MELEE_HASTE.value)
+        self.skillpoint_handler.try_spend_skillpoint(SkillpointHandler.AllyType.ROHANE, SkillpointHandler.RohaneSkill.MELEE_HASTE.value)
         # Sprint to Zombom and do NOT fight in the cave because the potion drops are extremely low
         self.follow_path("77777777777488844882222222622288888444447777774444488888888844888288848228444"
                          "77777771111517744362222222222222284453555511111222")
@@ -196,5 +196,227 @@ class Autoplayer:
         self.follow_path("515155553555535533333666666333335555511117111555113555366666666666222222222222222222222226663")
 
     def complete_act1_step4_sand_grundo(self) -> None:
-        # CANNOT IMPLEMENT UNTIL WE FIX UP THE ROHANE TURN CODE AND MIPSY TURN CODE
         pass
+        # CANNOT IMPLEMENT UNTIL WE FIX UP THE ROHANE TURN CODE AND MIPSY TURN CODE
+        # Recruit Mipsy and then try to invest her skillpoints into direct damage
+        # self.npc_handler.recruit_mipsy()
+
+        # Mipsy only has 58 HP at level 12 - long term investment, so put 11 into Direct Damage and don't touch it again
+        # for i in range(11):
+        #     self.skillpoint_spender.try_spend_skillpoint(SkillpointHandler.AllyType.MIPSY, SkillpointHandler.MipsySkill.DIRECT_DAMAGE.value)
+
+        # self.follow_path("48882")
+        # self.grind_battles(150, "88")
+
+        # for i in range(2):
+        #     self.skillpoint_spender.try_spend_skillpoint(SkillpointHandler.AllyType.ROHANE, SkillpointHandler.RohaneSkill.CRIT.value)
+        #     self.skillpoint_spender.try_spend_skillpoint(SkillpointHandler.AllyType.MIPSY, SkillpointHandler.MipsySkill.MELEE_DEFENSE.value)
+
+        # Walk from White River City to Fudra (we don't need anything from her, but you can buy)
+        # self.follow_path("44444444744444448222222666666633333333366666666666666666666666663333517774")
+
+        # Walk to Potraddo and talk to him
+        # self.follow_path("33335555551155")
+        # self.follow_path("41111111111111444444111111111111114444444111335333335633333333333322222")
+        # self.npc_handler.talk_with_potraddo()
+
+        # # Walk outside the town and train for a bit before heading over to the Lost City
+        # self.follow_path("11177444444444478444448482633336622222222662666222222882222222888822222224444477777")
+        # self.grind_battles(80)
+
+        # We may only gain one level here, but still try to spend skillpoints
+        # for i in range(2):
+        #     self.skillpoint_spender.try_spend_skillpoint(SkillpointHandler.AllyType.ROHANE, SkillpointHandler.RohaneSkill.CRIT.value)
+        #     self.skillpoint_spender.try_spend_skillpoint(SkillpointHandler.AllyType.MIPSY, SkillpointHandler.MipsySkill.MELEE_DEFENSE.value)
+
+
+        # self.follow_path("77777744488822266666666666638888")
+        # # Must talk to the ghost to gain entry
+        # self.npc_handler.talk_with_withered_ghost()
+        # self.follow_path("888888888")
+        # # Train inside the city for a bit because enemies after are quite dangerous if underleveled
+        # self.grind_battles(180)
+
+        # # Do not forget to spend skillpoints
+        # for i in range(2):
+        #     self.skillpoint_spender.try_spend_skillpoint(SkillpointHandler.AllyType.ROHANE, SkillpointHandler.RohaneSkill.CRIT.value)
+        #     self.skillpoint_spender.try_spend_skillpoint(SkillpointHandler.AllyType.MIPSY, SkillpointHandler.MipsySkill.MELEE_DEFENSE.value)
+        #
+        # self.follow_path("8888882844444444888882222228882222222284444444484")
+
+        # Beat the Mutant Sand Grundo and enter the portal
+        # NOTE: NOT SURE HOW MANY STEPS WE NEED TO TAKE!!!
+        # self.follow_path("444")
+
+    def complete_act1_step5_ramtor1(self) -> None:
+        pass
+    # self.grind_battles(200, "222")
+    # for i in range(2):
+    #     self.skillpoint_spender.try_spend_skillpoint(SkillpointHandler.AllyType.ROHANE, SkillpointHandler.RohaneSkill.CRIT.value)
+    #     self.skillpoint_spender.try_spend_skillpoint(SkillpointHandler.AllyType.MIPSY, SkillpointHandler.MipsySkill.MELEE_DEFENSE.value)
+    # self.follow_path("22222222222287744447771177828448222222263333663333351151111562651111111174444477771717111111117777777447444448888888884888444444444777")
+
+        # Lands us one tile below Uthare -> good upgrades, so buy
+        # self.follow_path("1")
+        # self.npc_handler.talk_with_uthare()
+        # self.follow_path("2888844822")
+        # self.npc_handler.talk_with_patannis()
+        # self.follow_path("115533333333333")
+        # self.grind_battles(200, "666")
+
+        # self.skillpoint_spender.try_spend_skillpoint(SkillpointHandler.AllyType.ROHANE, SkillpointHandler.RohaneSkill.CRIT.value)
+        # self.skillpoint_spender.try_spend_skillpoint(SkillpointHandler.AllyType.MIPSY, SkillpointHandler.MipsySkill.MELEE_DEFENSE.value)
+
+        # Now walk to Ramtor 1
+        # self.follow_path("66666666666666666666666666222663633333335555555335511")
+
+    def complete_act1_step6_ramtor2(self) -> None:
+        # self.follow_path("22888888844444444")
+        self.npc_handler.talk_with_guard_thyet()
+        # Exit the castle, then walk to the tower
+        # self.follow_path("844")
+        self.follow_path("63333333333333366633333333333335555555555535335")
+        # Train outside for a few levels
+        self.grind_battles(100)
+        self.follow_path("1111115533")
+        self.grind_battles(160)
+        for i in range(2):
+            self.skillpoint_handler.try_spend_skillpoint(SkillpointHandler.AllyType.ROHANE, SkillpointHandler.RohaneSkill.CRIT.value)
+            self.skillpoint_handler.try_spend_skillpoint(SkillpointHandler.AllyType.MIPSY, SkillpointHandler.MipsySkill.MELEE_DEFENSE.value)
+        self.follow_path("356228866334744477711177744477715515333666222366333551111115848888884444447446662666663332223")
+        self.follow_path("33")
+
+    def complete_act2_leximp_and_walk_cave(self) -> None:
+        """
+        Go to the cave and beat Leximp to get the wordstone. It is too much of a pain to actually buy stuff though.
+        """
+        pass
+        # self.follow_path("44")
+        # # Keep a reference to original path, but we don't need it
+        # # self.follow_path("784444774744444488488288882288881555555555115553333636336333335644")
+        # self.follow_path("7844447747444444884882888822888815555555551155533336363363333356")
+        # self.grind_battles(200, "7844444")
+        # self.follow_path("78444477474444441774474444444444447744444477444444444444444444444444444444477777777777771")
+
+    def complete_act2_caves_of_terror(self) -> None:
+        pass
+        # self.follow_path("1")
+        # self.grind_battles(300, "115")
+        #
+        # for i in range(4):
+        #     self.skillpoint_spender.try_spend_skillpoint(SkillpointHandler.AllyType.ROHANE,
+        #                                                  SkillpointHandler.RohaneSkill.DAMAGE_INCREASE.value)
+        #     self.skillpoint_spender.try_spend_skillpoint(SkillpointHandler.AllyType.MIPSY,
+        #                                                  SkillpointHandler.MipsySkill.CASTING_HASTE.value)
+
+        # self.follow_path("1555533336663633633333555353533355777774444447444447774775553336335553353577711555177444447"
+        #                  "444448447471111111117771178")
+        #
+        # self.follow_path("8")
+        # self.npc_handler.recruit_talinia()
+
+        # self.skillpoint_spender.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.TALINIA, SkillpointHandler.TaliniaSkill.RANGED_ATTACKS.value, 11)
+        # self.skillpoint_spender.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.TALINIA, SkillpointHandler.TaliniaSkill.SHOCKWAVE.value, 11)
+        # self.skillpoint_spender.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.TALINIA, SkillpointHandler.TaliniaSkill.MELEE_HASTE.value, 4)
+
+    def complete_act2_kolvars_and_grind(self) -> None:
+        pass
+        # self.follow_path("553")
+        # self.follow_path("55551155555555555555335333355333333555636333333355155366633336633363511777155366366626")
+        # # Grind a bit to make sure we are ready for harder monsters up to camp
+        # self.grind_battles(200)
+        # self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.ROHANE, SkillpointHandler.RohaneSkill.DAMAGE_INCREASE.value, 2)
+        # self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.MIPSY, SkillpointHandler.MipsySkill.CASTING_HASTE.value, 2)
+        # self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.TALINIA, SkillpointHandler.TaliniaSkill.MELEE_HASTE.value, 2)
+
+        # # Fights Kolvars
+        # self.follow_path("6")
+
+        # # Walk to underneath the town
+        # self.follow_path("666666666222268")
+
+    def complete_act2_scuzzy(self) -> None:
+        pass
+        # # Walk all the way to beneath camp
+        # self.follow_path("222822222888888888888444444444444444447444844444444888447774777747777711114")
+        # Go rest at camp site to be safe
+        # self.follow_path("57774")
+        # self.npc_handler.talk_with_allden()
+        # self.follow_path("33555111555")
+
+        # Grind a LOT to be safe and get ready for Act 3
+        # self.grind_battles(250, "555")
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.ROHANE, SkillpointHandler.RohaneSkill.DAMAGE_INCREASE.value, 3)
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.MIPSY, SkillpointHandler.MipsySkill.CASTING_HASTE.value, 3)
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.TALINIA, SkillpointHandler.TaliniaSkill.MELEE_HASTE.value, 3)
+
+
+        # Finally walk to Scuzzy
+        # self.follow_path("7")
+        # self.follow_path("353355553333355115355355117155553333533333333553662222266355111282844444711111115115333351"
+        #                  "7447441111355555222666222888266665555555333333666666335555555355551111117171155333333333333333")
+        #
+        # self.follow_path("633363333636663622666228888444444444477")
+
+        # Beat Scuzzy, but player is responsible for navigating back to the overworld
+        self.follow_path("77")
+
+    def complete_act3_siliclast(self) -> None:
+        pass
+        # # # Get out of the palace
+        # # self.follow_path("3335553333333333")
+        # # Begin walking to Siliclast
+        # self.follow_path("1117777774444444444")
+        # self.follow_path("1111111155335111533333333333333551118226222222844477777777777744444")
+        # # Train for a bit to make sure we aren't underleveled because enemies can be quite dangerous
+        # self.grind_battles(200)
+        # self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.ROHANE, SkillpointHandler.RohaneSkill.STUN.value, 4)
+        # self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.MIPSY, SkillpointHandler.MipsySkill.GROUP_HASTE.value, 4)
+        # self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.TALINIA, SkillpointHandler.TaliniaSkill.MAGIC_RESIST.value, 4)
+        # self.follow_path("4444444888882222222222284826333333333351511111")
+
+        # # Finally, beat Siliclast and step into portal
+        # self.follow_path("5")
+        # self.follow_path("111111")
+
+        # EXTREMELY IMPORTANT NOTE: I DON'T THINK THIS ENDS AT THE STARTING POSITION OF THE NEXT SCRIPT!
+        # MAY NEED TO WALK RIGHT TWO STEPS
+        # self.follow_path("44")
+
+    def complete_act3_gebarn(self) -> None:
+        pass
+        # # Walk out of palace again
+        # self.follow_path("3335553333333333")
+        # #
+        # # # Walk to the temple
+        # self.follow_path("111111111111774747711115511555155")
+        # # Stop in middle to train a bit
+        # self.follow_path("511111111155551111533588822228448222263336263622844444444711174777111111111177744222226333")
+        # self.grind_battles(160)
+        # self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.ROHANE, SkillpointHandler.RohaneSkill.STUN.value, 2)
+        # self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.MIPSY, SkillpointHandler.MipsySkill.GROUP_HASTE.value, 2)
+        # self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.TALINIA, SkillpointHandler.TaliniaSkill.MAGIC_RESIST.value, 2)
+        # self.follow_path("3335111115626822222222663335551117477715553344444448666688882222228")
+
+        # self.follow_path("2222")
+        # self.follow_path("44")
+
+    def complete_act3_revenant(self) -> None:
+        # self.follow_path("3335553333333333")
+        # self.follow_path("1111111111774747711115511555")
+        # self.follow_path("111111157")
+
+        # self.follow_path("24884")
+
+        # THIS PATH BELOW SEEMS INCORRECT!
+        # # # self.follow_path("1711151144884")
+
+        # self.npc_handler.recruit_velm()
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.VELM, SkillpointHandler.VelmSkill.HEAL.value, 11)
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.VELM, SkillpointHandler.VelmSkill.GROUP_SHIELD.value, 11)
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.VELM, SkillpointHandler.VelmSkill.MELEE_DEFENSE.value, 11)
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.VELM, SkillpointHandler.VelmSkill.CASTING_HASTE.value, 4)
+
+        # Leave Waset Village
+        self.follow_path("3555")
+        # self.follow_path("3333555555555553333666666666666666666622226223355")

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+import time
 from enum import Enum
 from typing import List
 
@@ -23,6 +24,8 @@ class OverworldPage(NeopetsPage):
     SWITCH_HUNTING_MODE_URL = r"https://www.neopets.com/games/nq2/nq2.phtml?act=travel&mode=2"
     
     MAIN_GAME_URL = r"https://www.neopets.com/games/nq2/nq2.phtml"
+
+    MOVEMENT_URL_TEMPLATE = r"https://www.neopets.com/games/nq2/nq2.phtml?act=move&dir={0}"
 
     GAME_CONTAINER_LOCATOR = "div.phpGamesNonPortalView"
     NAVIGATION_BUTTONS_GRID_LOCATOR = r"img[src='//images.neopets.com/nq2/x/nav.gif']"
@@ -106,6 +109,40 @@ class OverworldPage(NeopetsPage):
         else:
             raise ValueError(f"Invalid direction for path direction: {direction}")
 
+    def go_to_movement_url_with_wait(self, movement_url: str, num_retries=6, prev_map_coords: List[str] = None) -> None:
+        """
+        This method visits a URL and waits for a page reload to ensure that the action is complete,
+        including fallback handling if the navigation fails. Mainly used for overworld movement.
+        :param url: URL to visit
+        """
+        for attempt in range(num_retries):
+            try:
+                with self.page_instance.expect_navigation():
+                    self.page_instance.goto(movement_url)
+                    logger.info(f"Attempting to visit {movement_url} ...")
+                    self.page_instance.wait_for_load_state("load")
+                return
+            except Exception as e:
+                logger.warning(f"Attempt {attempt} failed: {e}")
+                try:
+                    logger.info("Attempting to reload the page and determine the result")
+                    self.page_instance.goto("about:blank")
+                    time.sleep(2)
+                    self.page_instance.goto(OverworldPage.MAIN_GAME_URL)
+                    self.page_instance.wait_for_load_state("load")
+                    time.sleep(2)
+                    new_map_coords = self.get_map_coords()
+                    if set(prev_map_coords) == set(new_map_coords):
+                        logger.info("The previous move action did not go through. Retrying URL visit...")
+                        continue
+                    else:
+                        logger.info("The page failed to load but the action was performed.")
+                        return
+                except Exception as reload_error:
+                    logger.warning(f"Also failed to reload the page: {reload_error}")
+        logger.error(f"Failed to visit URL after {num_retries} attempts.")
+        raise Exception("Max retries exceeded for visit_url_with_wait")
+
     def click_normal_movement_button(self) -> None:
         self.click_clickable_element(
             self.normal_mode_button,
@@ -156,8 +193,12 @@ class OverworldPage(NeopetsPage):
                 try:
                     logger.info("Attempting to reload the page and determine the result")
                     self.page_instance.goto("about:blank")
+                    # Wait a couple of seconds before page reload
+                    time.sleep(2)
                     self.page_instance.goto(OverworldPage.MAIN_GAME_URL)
                     self.page_instance.wait_for_load_state("load")
+                    # Wait a couple of seconds after page load to ensure elements loaded
+                    time.sleep(2)
                     new_map_coords = self.get_map_coords()
                     # Not sure if this check fails when the page actually loaded but took us to a battle page - might be ok
                     if set(prev_map_coords) == set(new_map_coords):

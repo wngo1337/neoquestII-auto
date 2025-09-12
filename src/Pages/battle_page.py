@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 
 from playwright.sync_api import Page
 
+from .battle_result_page import BattleResultPage
 from .neopets_page import NeopetsPage
 from src.potion_handler import PotionHandler
 
@@ -37,6 +38,8 @@ class BattlePage(NeopetsPage):
     ALREADY_DEFEATED_TARGET_TEXT = "for it has already been defeated"
     INVALID_CASTING_TARGET_TEXT = "You must select a valid target to cast on!"
     # Also need one for casting a spell on invalid target
+
+    RAMTOR_FLEE_TEXT = "Ramtor grunts as he is struck"
 
     class TurnType(Enum):
         ENEMY = auto()
@@ -197,3 +200,14 @@ class BattlePage(NeopetsPage):
             return True
         else:
             return False
+
+    def is_special_boss_early_exit(self) -> bool:
+        """
+        Check if the monster being battled is a special boss monster that flees early.
+        Return a BattleResultPage object.
+        """
+        page_html = self.get_page_content()
+        if BattlePage.RAMTOR_FLEE_TEXT in page_html:
+            return True
+        return False
+
