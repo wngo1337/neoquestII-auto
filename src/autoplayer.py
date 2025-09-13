@@ -418,5 +418,5 @@ class Autoplayer:
         self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.VELM, SkillpointHandler.VelmSkill.CASTING_HASTE.value, 4)
 
         # Leave Waset Village
-        self.follow_path("3555")
-        # self.follow_path("3333555555555553333666666666666666666622226223355")
+        # self.follow_path("3555")
+        self.follow_path("3333555555555553333666666666666666666622226223355")

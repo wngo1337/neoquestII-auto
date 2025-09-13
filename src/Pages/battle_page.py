@@ -1,6 +1,6 @@
 from enum import Enum, auto
 import re
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, NavigableString
 
 from playwright.sync_api import Page
 
@@ -138,15 +138,24 @@ class BattlePage(NeopetsPage):
                 turn_type = self.get_turn_type()
                 if turn_type == BattlePage.TurnType.PLAYER:
                     # Text will be further inside a bold tag, but the container doesn't contain any other text
+                    # BUT THIS IS ONLY TRUE FOR WHEN IT IS THAT CHARACTER'S TURN!!!
+                    # Otherwise, it will simply be in the td tag
                     character_name_tag = parent_td.find(
                         "b", string=BattlePage.ALLY_NAMES, recursive=True
                     )
                     # Character names are in the same td element as the HP text
                     # Monster names are not
+                    character_name = ""
                     if character_name_tag:
                         character_name = character_name_tag.get_text().strip()
                     else:
-                        character_name = "NOT_A_NAME"
+                        text_elements = [str(cont).strip() for cont in parent_td.contents if isinstance(cont, NavigableString)]
+                        for text in text_elements:
+                            if text in BattlePage.ALLY_NAMES:
+                                character_name = text
+                                break
+                        if character_name not in BattlePage.ALLY_NAMES:
+                            character_name = "NOT_A_NAME"
                 else:
                     # If not our turn, then text will simply be inside the td tag
                     character_name_tag = parent_td
