@@ -19,13 +19,19 @@ class OverworldPage(NeopetsPage):
     Page object model representing the NeoQuest II overworld page.
     Holds element locators and keeps references to UI buttons
     """
-    
-    SWITCH_NORMAL_NODE_URL = r"https://www.neopets.com/games/nq2/nq2.phtml?act=travel&mode=1"
-    SWITCH_HUNTING_MODE_URL = r"https://www.neopets.com/games/nq2/nq2.phtml?act=travel&mode=2"
-    
+
+    SWITCH_NORMAL_NODE_URL = (
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=travel&mode=1"
+    )
+    SWITCH_HUNTING_MODE_URL = (
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=travel&mode=2"
+    )
+
     MAIN_GAME_URL = r"https://www.neopets.com/games/nq2/nq2.phtml"
 
-    MOVEMENT_URL_TEMPLATE = r"https://www.neopets.com/games/nq2/nq2.phtml?act=move&dir={0}"
+    MOVEMENT_URL_TEMPLATE = (
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=move&dir={0}"
+    )
 
     GAME_CONTAINER_LOCATOR = "div.phpGamesNonPortalView"
     NAVIGATION_BUTTONS_GRID_LOCATOR = r"img[src='//images.neopets.com/nq2/x/nav.gif']"
@@ -109,7 +115,9 @@ class OverworldPage(NeopetsPage):
         else:
             raise ValueError(f"Invalid direction for path direction: {direction}")
 
-    def go_to_movement_url_with_wait(self, movement_url: str, num_retries=6, prev_map_coords: List[str] = None) -> None:
+    def go_to_movement_url_with_wait(
+        self, movement_url: str, num_retries=6, prev_map_coords: List[str] = None
+    ) -> None:
         """
         This method visits a URL and waits for a page reload to ensure that the action is complete,
         including fallback handling if the navigation fails. Mainly used for overworld movement.
@@ -125,18 +133,27 @@ class OverworldPage(NeopetsPage):
             except Exception as e:
                 logger.warning(f"Attempt {attempt} failed: {e}")
                 try:
-                    logger.info("Attempting to reload the page and determine the result")
+                    logger.info(
+                        "Attempting to reload the page and determine the result"
+                    )
                     self.page_instance.goto("about:blank")
                     time.sleep(2)
+                    self.page_instance.goto(OverworldPage.MAIN_GAME_URL)
+                    self.page_instance.wait_for_load_state("load")
+                    # Refresh one more time in case it doesn't pick up the refreshed content
                     self.page_instance.goto(OverworldPage.MAIN_GAME_URL)
                     self.page_instance.wait_for_load_state("load")
                     time.sleep(2)
                     new_map_coords = self.get_map_coords()
                     if set(prev_map_coords) == set(new_map_coords):
-                        logger.info("The previous move action did not go through. Retrying URL visit...")
+                        logger.info(
+                            "The previous move action did not go through. Retrying URL visit..."
+                        )
                         continue
                     else:
-                        logger.info("The page failed to load but the action was performed.")
+                        logger.info(
+                            "The page failed to load but the action was performed."
+                        )
                         return
                 except Exception as reload_error:
                     logger.warning(f"Also failed to reload the page: {reload_error}")
@@ -171,8 +188,13 @@ class OverworldPage(NeopetsPage):
             self.options_button,
             "We were unable to click the options button. Ensure that you are on the overworld.",
         )
-        
-    def simulate_click_with_wait(self, unclickable_element: Locator, num_retries=6, prev_map_coords: List[str] = None) -> None:
+
+    def simulate_click_with_wait(
+        self,
+        unclickable_element: Locator,
+        num_retries=6,
+        prev_map_coords: List[str] = None,
+    ) -> None:
         """
         This method handles elements that perform Javascript calls when clicked physically, but NOT VIA PLAYWRIGHT.
         It sends a click event and then waits for a page reload to occur to ensure that the action has finished.
@@ -191,7 +213,9 @@ class OverworldPage(NeopetsPage):
             except Exception as e:
                 logger.warning(f"Attempt {attempt} failed: {e}")
                 try:
-                    logger.info("Attempting to reload the page and determine the result")
+                    logger.info(
+                        "Attempting to reload the page and determine the result"
+                    )
                     self.page_instance.goto("about:blank")
                     # Wait a couple of seconds before page reload
                     time.sleep(2)
@@ -202,15 +226,23 @@ class OverworldPage(NeopetsPage):
                     new_map_coords = self.get_map_coords()
                     # Not sure if this check fails when the page actually loaded but took us to a battle page - might be ok
                     if set(prev_map_coords) == set(new_map_coords):
-                        logger.info("The previous movement action did not go through. Resubmitting action...")
+                        logger.info(
+                            "The previous movement action did not go through. Resubmitting action..."
+                        )
                         # Then redo the action since it didn't go through
                         continue
                     else:
-                        logger.info("The page failed to load but the action was performed.")
+                        logger.info(
+                            "The page failed to load but the action was performed."
+                        )
                         return
                 except Exception as reload_error:
-                    logger.warning(f"Also failed to reload the page after failed simulated click: {reload_error}")
-        logger.error(f"Failed to interact with the element after {num_retries} attempts.")
+                    logger.warning(
+                        f"Also failed to reload the page after failed simulated click: {reload_error}"
+                    )
+        logger.error(
+            f"Failed to interact with the element after {num_retries} attempts."
+        )
         raise Exception("Max retries exceeded for simulate_click_with_wait")
 
     # Utility method to compare if page is the same
@@ -218,8 +250,15 @@ class OverworldPage(NeopetsPage):
         """
         Get the raw HTML of the overworld map for comparison against another overworld map HTML.
         """
+        # WE HAVE IDENTIFIED THE MAJOR ISSUE HERE!!! THE LIST OF MAP COORDINATES IS ALWAYS RETURNING NOTHING
+        # IT SEEMS THAT THE TABLE COUNT CHANGES DYNAMICALLY BASED ON VARIOUS GAME DATA LIKE HOW MANY CHARACTERS!!!
+        # WE FIX THIS BY SIMPLY GETTING COORDS FROM THE WHOLE GAME CONTAINER ELEMENT INSTEAD
+        # Thankfully, doesn't clash with the coords attribute in navmap
         container = self.page_instance.locator(OverworldPage.GAME_CONTAINER_LOCATOR)
-        map_tbody = container.locator('tbody').nth(4)  # 0-based index, so 4 is the fifth tbody
-        map_html = map_tbody.inner_html()
+        # map_tbody = container.locator("tbody").nth(
+        #     4
+        # )  # 0-based index, so 4 is the fifth tbody
+        # map_html = map_tbody.inner_html()
+        map_html = container.inner_html()
         coords_matches = re.findall(r"coords\((.*?)\)", map_html)
         return coords_matches

@@ -40,6 +40,9 @@ class BattlePage(NeopetsPage):
     # Also need one for casting a spell on invalid target
 
     RAMTOR_FLEE_TEXT = "Ramtor grunts as he is struck"
+    
+    FAERIE_THIEF_FLEE1_TEXT = "The Faerie Thief leaps away"
+    FAERIE_THIEF_FLEE2_TEXT = "The Faerie Thief stumbles back"
 
     class TurnType(Enum):
         ENEMY = auto()
@@ -193,7 +196,7 @@ class BattlePage(NeopetsPage):
         # NOW CHECK IF EACH POTION IS IN THE STRING!!!
         available_potions = []
         for potion_id, (potion_name, heal_val) in PotionHandler.POTIONS.items():
-            if potion_name in page_html:
+            if potion_name in page_html and f"used a {potion_name}" not in page_html:
                 available_potions.append(potion_name)
         return available_potions
 
@@ -216,7 +219,9 @@ class BattlePage(NeopetsPage):
         Return a BattleResultPage object.
         """
         page_html = self.get_page_content()
-        if BattlePage.RAMTOR_FLEE_TEXT in page_html:
+        if BattlePage.RAMTOR_FLEE_TEXT in page_html\
+                or BattlePage.FAERIE_THIEF_FLEE1_TEXT in page_html\
+                or BattlePage.FAERIE_THIEF_FLEE2_TEXT in page_html:
             return True
         return False
 

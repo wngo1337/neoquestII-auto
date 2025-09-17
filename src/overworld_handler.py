@@ -58,22 +58,11 @@ class OverworldHandler:
         :param direction: a length-one string representing a direction on the navigation map
         """
 
-        # We can either expect a string and convert, or expect an int directly
-        # direction_as_enum = OverworldHandler.Direction(int(direction))
-        # direction_selector = OverworldHandler.DIRECTION_TO_LOCATOR[direction_as_enum]
-        # direction_button = self.neopets_page.browser_page.locator(direction_selector)
-        # # Need this context manager otherwise, Playwright's dispatch_event can't tell when page is ready to click again
-        # with self.neopets_page.browser_page.expect_navigation():
-        #     direction_button.dispatch_event("click")
-        #     logger.info(
-        #         f"Attempting to move {direction_selector} and waiting for page load..."
-        #     )
-        #
-        #     self.neopets_page.browser_page.wait_for_load_state("load")
-        # return self.neopets_page
         map_coords = self.get_overworld_map_coordinates()
         movement_url = OverworldPage.MOVEMENT_URL_TEMPLATE.format(direction)
-        self.overworld_page.go_to_movement_url_with_wait(movement_url, prev_map_coords=map_coords)
+        self.overworld_page.go_to_movement_url_with_wait(
+            movement_url, prev_map_coords=map_coords
+        )
         if self.is_overworld():
             return self.overworld_page
         else:
@@ -87,8 +76,14 @@ class OverworldHandler:
         NOT THE CAVE TILE ITSELF, SO YOU HAVE TO ACCOUNT FOR THE EXTRA STEP WHEN YOU ARE RETURNING!!!
         """
         opposite_map = {
-            '1': '2', '2': '1', '3': '4', '4': '3',
-            '5': '8', '6': '7', '7': '6', '8': '5',
+            "1": "2",
+            "2": "1",
+            "3": "4",
+            "4": "3",
+            "5": "8",
+            "6": "7",
+            "7": "6",
+            "8": "5",
         }
         # reversed_path = reversed(map_path)
         # inverted_path = ''
@@ -97,22 +92,32 @@ class OverworldHandler:
         # return inverted_path
 
         try:
-            return ''.join(opposite_map[step] for step in reversed(map_path))
+            return "".join(opposite_map[step] for step in reversed(map_path))
         except KeyError as e:
             raise ValueError(f"Invalid direction '{e.args[0]}' encountered in path.")
 
     def switch_movement_mode(self, mode: MovementMode) -> None:
         if mode == OverworldHandler.MovementMode.NORMAL:
-            self.overworld_page.go_to_url_and_wait_navigation(OverworldPage.SWITCH_NORMAL_NODE_URL)
+            logger.info("Switching to normal movement mode...")
+            self.overworld_page.go_to_url_and_wait_navigation(
+                OverworldPage.SWITCH_NORMAL_NODE_URL
+            )
         else:
-            self.overworld_page.go_to_url_and_wait_navigation(OverworldPage.SWITCH_HUNTING_MODE_URL)
+            logger.info("Switching to hunting movement mode...")
+            self.overworld_page.go_to_url_and_wait_navigation(
+                OverworldPage.SWITCH_HUNTING_MODE_URL
+            )
 
-    def open_inventory(self) -> None:
-        self.overworld_page.click_inventory_button()
+    # def open_inventory(self) -> None:
+    #     self.overworld_page.click_inventory_button()
 
-    def open_options(self) -> None:
-        self.overworld_page.click_options_button()
+    # def open_options(self) -> None:
+    #     self.overworld_page.click_options_button()
 
     def get_overworld_map_coordinates(self) -> List[str]:
+        """
+        Get a list of the coordinates on the overworld map. Mainly used to determine if an action went through on page
+        load fail.
+        """
         map_coords = self.overworld_page.get_map_coords()
         return map_coords

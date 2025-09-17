@@ -1,9 +1,11 @@
 import logging
 import os
+import sys
+from unittest import case
 
 import click
 from autoplayer import Autoplayer
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import sync_playwright, BrowserContext
 
 from Pages.neopets_page import NeopetsPage
 
@@ -19,21 +21,31 @@ REQUIRED_DATA_DIR = "RequiredData"
 ADBLOCK_DIR = "AdblockDir"
 USER_DATA_DIR = "UserDataDir"
 
-adblock_container_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", REQUIRED_DATA_DIR, ADBLOCK_DIR))
+adblock_container_path = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "..", REQUIRED_DATA_DIR, ADBLOCK_DIR)
+)
 
 # List directories inside AdblockDir
-subdirs = [dir_name for dir_name in os.listdir(adblock_container_path)
-           if os.path.isdir(os.path.join(adblock_container_path, dir_name))]
+subdirs = [
+    dir_name
+    for dir_name in os.listdir(adblock_container_path)
+    if os.path.isdir(os.path.join(adblock_container_path, dir_name))
+]
 
 if len(subdirs) == 1:
     actual_adblock_folder_name = subdirs[0]
     full_adblock_path = os.path.join(adblock_container_path, actual_adblock_folder_name)
     logger.info(f"Full Adblock directory path: {full_adblock_path}")
 else:
-    logger.info("AdblockDir contains multiple or no directories. It should only contain the Adblock extension folder!")
+    logger.info(
+        "AdblockDir contains multiple or no directories. It should only contain the Adblock extension folder!"
+    )
 
-full_user_data_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", REQUIRED_DATA_DIR, USER_DATA_DIR))
+full_user_data_path = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "..", REQUIRED_DATA_DIR, USER_DATA_DIR)
+)
 logger.info(f"Full user data directory for storage is: {full_user_data_path}")
+
 
 class AutoplayerLauncher:
     """
@@ -45,6 +57,66 @@ class AutoplayerLauncher:
 
     def __init__(self, page: NeopetsPage, use_neopass: bool = False):
         self.autoplayer = Autoplayer(page, use_neopass)
+
+    def show_menu(self, context: BrowserContext, autoplayer: Autoplayer) -> None:
+        while True:
+            print("Select a game section to complete or q to quit")
+            print("1. Act 1 sections")
+            print("2. Act 2 sections")
+            print("3. Act 3 sections")
+            print("4. Act 4 sections")
+            print("5. Act 5 sections")
+            print("6. Follow a custom path:")
+            print("7. Grind battles")
+
+            choice = input("Enter your choice: ").lower()
+
+            match choice:
+                case "q":
+                    logger.info("Closing the autoplayer...")
+                    context.close()
+                    sys.exit(0)
+                case "1":
+                    print("Select an Act 1 subsection to complete: ")
+                    print("1. Initial training grind")
+                    print("2. Defeat Miner Foreman")
+                    print("3. Defeat Zombom")
+                    print("4. Defeat Mutant Sand Grundo")
+                    print("5. Defeat Ramtor - first encounter")
+                    print("6. Defeat Ramtor - second encounter")
+
+                    subchoice = input(
+                        "Enter your choice from Act 1 options or enter anything else to go back to menu: "
+                    )
+
+                    match subchoice:
+                        case "1":
+                            autoplayer.complete_act1_initial_training()
+                        case "2":
+                            autoplayer.complete_act2_miner_foreman()
+                        case "3":
+                            autoplayer.complete_act1_zombom()
+                        case "4":
+                            autoplayer.complete_act1_sand_grundo()
+                        case "5":
+                            autoplayer.complete_act1_ramtor1()
+                        case "6":
+                            autoplayer.complete_act1_ramtor2()
+                        case _:
+                            print(
+                                "You did not select a valid option. Returning to main menu..."
+                            )
+                case "2":
+                    print("Enter an Act 2 subsection to complete: ")
+                    print("1. Defeat Leximp")
+                    print("2. Caves of Terror + Talinia")
+                    subchoice = input(
+                        "Enter your choice from Act 2 options or enter anything else to go back to menu: "
+                    )
+
+                    match subchoice:
+                        case "1":
+                            self.autoplayer.complete_act2_leximp_and_walk_cave()
 
 
 @click.command()
@@ -63,8 +135,8 @@ def main(use_neopass: bool) -> None:
             headless=False,
             args=[
                 f"--disable-extensions-except={full_adblock_path}",
-                f"--load-extension={full_adblock_path}"
-            ]
+                f"--load-extension={full_adblock_path}",
+            ],
         )
 
         page = context.new_page()
@@ -78,6 +150,44 @@ def main(use_neopass: bool) -> None:
         else:
             logger.info("Launching autoplayer with traditional authentication...")
             launcher = AutoplayerLauncher(use_neopass=False, page=neopets_page)
+
+        prev_coordinates = (
+            launcher.autoplayer.overworld_handler.get_overworld_map_coordinates()
+        )
+        current_coordinates = (
+            launcher.autoplayer.overworld_handler.get_overworld_map_coordinates()
+        )
+
+        print(
+            f"Do coordinates match after page refresh but no movement? {prev_coordinates == current_coordinates}"
+        )
+
+        launcher.autoplayer.follow_path("3")
+        updated_coordinates = (
+            launcher.autoplayer.overworld_handler.get_overworld_map_coordinates()
+        )
+
+        print(
+            f"Now do coordinates match after page refresh AND movement? {prev_coordinates == updated_coordinates}"
+        )
+
+        launcher.show_menu(context, launcher.autoplayer)
+
+        # while True:
+        #     launcher.autoplayer.follow_path(
+        #         "78444477474444441774474444444444447744444477444444444444444444444444444444477777777777771"
+        #     )
+        #     launcher.autoplayer.follow_path(
+        #         launcher.autoplayer.overworld_handler.invert_path(
+        #             "78444477474444441774474444444444447744444477444444444444444444444444444444477777777777771"
+        #         )
+        #     )
+
+        # while True:
+        #     launcher.autoplayer.follow_path("3241")
+        #     logger.info(
+        #         "Completed an iteration of debugging movement! If we don't end up under the sign, something went wrong"
+        #     )
 
         # coords1 = launcher.autoplayer.overworld_handler.get_overworld_map_coordinates()
         # launcher.autoplayer.overworld_handler.overworld_page.page_instance.reload()
@@ -100,7 +210,18 @@ def main(use_neopass: bool) -> None:
         # launcher.autoplayer.complete_act2_scuzzy()
         # launcher.autoplayer.complete_act3_siliclast()
         # launcher.autoplayer.complete_act3_gebarn()
-        launcher.autoplayer.complete_act3_revenant()
+        # launcher.autoplayer.complete_act3_revenant()
+        # launcher.autoplayer.complete_act3_coltzan()
+        # launcher.autoplayer.complete_act3_pyramid()
+        # launcher.autoplayer.complete_act4_meuka()
+        # launcher.autoplayer.complete_act4_spider_grundo()
+        # launcher.autoplayer.complete_act4_faeries()
+        # launcher.autoplayer.complete_act4_hubrid_nox()
+        # launcher.autoplayer.complete_act4_esophagor()
+        # launcher.autoplayer.complete_act5_fallen_angel()
+        # launcher.autoplayer.complete_act5_devilpuss()
+        # launcher.autoplayer.complete_act5_faerie_thief()
+        # launcher.autoplayer.complete_act5_finale()
 
         context.close()
 
@@ -144,14 +265,13 @@ def main(use_neopass: bool) -> None:
         #             launcher.autoplayer.npc_handler.talk_with_mother()
         #             launcher.autoplayer.follow_path("3333")
 
-
-            # else:
-            #     continue
-            # else:
-            #     launcher.autoplayer.battle_handler.start_battle(launcher.autoplayer.overworld_handler.overworld_page)
-            #     launcher.autoplayer.battle_handler.win_battle()
-            #     launcher.autoplayer.overworld_handler.overworld_page = launcher.autoplayer.battle_handler.end_battle()
-            #     num_completed_battles += 1
+        # else:
+        #     continue
+        # else:
+        #     launcher.autoplayer.battle_handler.start_battle(launcher.autoplayer.overworld_handler.overworld_page)
+        #     launcher.autoplayer.battle_handler.win_battle()
+        #     launcher.autoplayer.overworld_handler.overworld_page = launcher.autoplayer.battle_handler.end_battle()
+        #     num_completed_battles += 1
 
         # launcher.autoplayer.grind_battles(num_desired_battles=50)
         # launcher.autoplayer.follow_path("34343434")
