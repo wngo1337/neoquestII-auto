@@ -85,11 +85,11 @@ class AutoplayerLauncher:
                     print("5. Defeat Ramtor - first encounter")
                     print("6. Defeat Ramtor - second encounter")
 
-                    subchoice = input(
+                    act1_subchoice = input(
                         "Enter your choice from Act 1 options or enter anything else to go back to menu: "
                     )
 
-                    match subchoice:
+                    match act1_subchoice:
                         case "1":
                             autoplayer.complete_act1_initial_training()
                         case "2":
@@ -107,16 +107,112 @@ class AutoplayerLauncher:
                                 "You did not select a valid option. Returning to main menu..."
                             )
                 case "2":
-                    print("Enter an Act 2 subsection to complete: ")
+                    print("Enter an Act 2 subsection to complete:")
                     print("1. Defeat Leximp")
                     print("2. Caves of Terror + Talinia")
-                    subchoice = input(
+                    print("3. Kolvars + grind")
+                    print("4. Lost Caves grind + Scuzzy")
+
+                    act2_subchoice = input(
                         "Enter your choice from Act 2 options or enter anything else to go back to menu: "
                     )
 
-                    match subchoice:
+                    match act2_subchoice:
                         case "1":
                             self.autoplayer.complete_act2_leximp_and_walk_cave()
+                        case "2":
+                            self.autoplayer.complete_act2_caves_of_terror()
+                        case "3":
+                            self.autoplayer.complete_act2_kolvars_and_grind()
+                        case "4":
+                            self.autoplayer.complete_act2_scuzzy()
+                        case _:
+                            print(
+                                "You did not select a valid option. Returning to main menu..."
+                            )
+
+                case "3":
+                    print("Enter and Act 3 subsection to complete:")
+                    print("1. Grind + defeat Siliclast")
+                    print("2. Grind + defeat Gebarn II")
+                    print("3. GET VELM + defeat Revenant + gemstone stuff?")
+                    print("4. Defeat Coltzan + do gemstone stuff")
+                    print("5. Go to pyramid and fight Anubits")
+
+                    act3_subchoice = input(
+                        "Enter your choice from Act 3 options or enter anything else to go back to menu: "
+                    )
+
+                    match act3_subchoice:
+                        case "1":
+                            self.autoplayer.complete_act3_siliclast()
+                        case "2":
+                            self.autoplayer.complete_act3_gebarn()
+                        case "3":
+                            self.autoplayer.complete_act3_revenant()
+                        case "4":
+                            self.autoplayer.complete_act3_coltzan()
+                        case "5":
+                            self.autoplayer.complete_act3_pyramid()
+                        case _:
+                            print(
+                                "You did not select a valid option from Act 3 choices. Returning to main menu..."
+                            )
+
+                case "4":
+                    print("Select an Act 4 subsection to complete:")
+                    print("1. Defeat Meuka")
+                    print("2. Defeat Spider Grundo")
+                    print("3. Complete Four Faeries sequence + boss fight")
+                    print("4. Defeat Hubrid Nox")
+                    print("5. Defeat Esophagor")
+
+                    act4_subchoice = input(
+                        "Enter your choice from Act 4 options or enter anything else to go back to menu: "
+                    )
+
+                    match act4_subchoice:
+                        case "1":
+                            self.autoplayer.complete_act4_meuka()
+                        case "2":
+                            self.autoplayer.complete_act4_spider_grundo()
+                        case "3":
+                            self.autoplayer.complete_act4_faeries()
+                        case "4":
+                            self.autoplayer.complete_act4_hubrid_nox()
+                        case "5":
+                            self.autoplayer.complete_act4_esophagor()
+                        case _:
+                            print(
+                                "You did not select a valid Act 4 option. Returning to main menu..."
+                            )
+
+                case "5":
+                    print("Select an Act 5 subsection to complete:")
+                    print("1. Defeat the Fallen Angel")
+                    print("2. Defeat Devilpuss")
+                    print("3. Complete Faerie Thief questline and all running arround")
+                    print(
+                        "4. Complete act 5 Finale -> does NOT include King Terask II fight"
+                    )
+
+                    act5_subchoice = input(
+                        "Enter your choice from Act 5 options or enter anything else to go back to menu: "
+                    )
+
+                    match act5_subchoice:
+                        case "1":
+                            self.autoplayer.complete_act5_fallen_angel()
+                        case "2":
+                            self.autoplayer.complete_act5_devilpuss()
+                        case "3":
+                            self.autoplayer.complete_act5_faerie_thief()
+                        case "4":
+                            self.autoplayer.complete_act5_finale()
+                        case _:
+                            print(
+                                "You did not select a valid Act 5 option. Returning to main menu..."
+                            )
 
 
 @click.command()
@@ -151,25 +247,25 @@ def main(use_neopass: bool) -> None:
             logger.info("Launching autoplayer with traditional authentication...")
             launcher = AutoplayerLauncher(use_neopass=False, page=neopets_page)
 
-        prev_coordinates = (
-            launcher.autoplayer.overworld_handler.get_overworld_map_coordinates()
-        )
-        current_coordinates = (
-            launcher.autoplayer.overworld_handler.get_overworld_map_coordinates()
-        )
+        # prev_coordinates = (
+        #     launcher.autoplayer.overworld_handler.get_overworld_map_coordinates()
+        # )
+        # current_coordinates = (
+        #     launcher.autoplayer.overworld_handler.get_overworld_map_coordinates()
+        # )
 
-        print(
-            f"Do coordinates match after page refresh but no movement? {prev_coordinates == current_coordinates}"
-        )
-
-        launcher.autoplayer.follow_path("3")
-        updated_coordinates = (
-            launcher.autoplayer.overworld_handler.get_overworld_map_coordinates()
-        )
-
-        print(
-            f"Now do coordinates match after page refresh AND movement? {prev_coordinates == updated_coordinates}"
-        )
+        # print(
+        #     f"Do coordinates match after page refresh but no movement? {prev_coordinates == current_coordinates}"
+        # )
+        #
+        # launcher.autoplayer.follow_path("3")
+        # updated_coordinates = (
+        #     launcher.autoplayer.overworld_handler.get_overworld_map_coordinates()
+        # )
+        #
+        # print(
+        #     f"Now do coordinates match after page refresh AND movement? {prev_coordinates == updated_coordinates}"
+        # )
 
         launcher.show_menu(context, launcher.autoplayer)
 

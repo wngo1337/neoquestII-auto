@@ -6,126 +6,193 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+
 class NpcHandler:
-    
     MAIN_GAME_URL = r"https://www.neopets.com/games/nq2/nq2.phtml"
 
     # MERIDELL KEY NPCs
     # You only need to be in range to use these options
     # Will use this one A LOT in the early game
-    MOTHER_INTERACTION_LINKS = [r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=10201&say=rest"]
+    MOTHER_INTERACTION_LINKS = [
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=10201&say=rest"
+    ]
 
     # OPENS A SHOP PAGE!!!
-    PONGORAS_TRADE_LINKS = [r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=10202&greet=1"]
+    PONGORAS_TRADE_LINKS = [
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=10202&greet=1"
+    ]
 
-    TEBOR_INTERACTION_LINKS = [r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=10401&greet=1",
-                               r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=10401&mact=buy&targ_item=10011&quant=1"]
+    TEBOR_INTERACTION_LINKS = [
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=10401&greet=1",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=10401&mact=buy&targ_item=10011&quant=1",
+    ]
 
-    MIPSY_INTERACTION_LINKS = [r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=10408&say=join"]
-    
-    POTRADDO_INTERACTION_LINKS = [r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=10718",
-                                  r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=10718&say=city",
-                                  r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=10718&say=no",
-                                  r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=10718&say=about",
-                                  r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=10718&say=east",
-                                  r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=10718&say=enter"]
+    MIPSY_INTERACTION_LINKS = [
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=10408&say=join"
+    ]
+
+    POTRADDO_INTERACTION_LINKS = [
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=10718",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=10718&say=city",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=10718&say=no",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=10718&say=about",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=10718&say=east",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=10718&say=enter",
+    ]
 
     # Talk to the ghost for entry
-    WITHERED_GHOST_INTERACTION_LINKS = [r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=10801",
-                            r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=10801&say=key"]
+    WITHERED_GHOST_INTERACTION_LINKS = [
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=10801",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=10801&say=key",
+    ]
 
     # Buy a few resurrection potions in case you get unlucky in the overworld
-    UTHARE_INTERACTION_LINKS = [r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=11201&greet=1",
-                                r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=11201&mact=buy&targ_item=30400&quant=10"]
+    UTHARE_INTERACTION_LINKS = [
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=11201&greet=1",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=11201&mact=buy&targ_item=30400&quant=10",
+    ]
 
-    PATANNIS_INTERACTION_LINKS = [r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=11203&greet=1",
-                                  r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=11203&mact=buy&targ_item=10017&quant=1",
-                                  r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=11203&mact=buy&targ_item=20017&quant=1",
-                                  r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=11203&mact=buy&targ_item=20116&quant=1"]
+    PATANNIS_INTERACTION_LINKS = [
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=11203&greet=1",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=11203&mact=buy&targ_item=10017&quant=1",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=11203&mact=buy&targ_item=20017&quant=1",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=11203&mact=buy&targ_item=20116&quant=1",
+    ]
 
     # Rest at the temp inn
-    GUARD_THYET_INTERACTION_LINKS = [r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=11001&say=rest"]
-    
+    GUARD_THYET_INTERACTION_LINKS = [
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=11001&say=rest"
+    ]
+
     # Recruit Talinia
-    TALINIA_INTERACTION_LINKS = [r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=20510",
-                                 r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=20510&say=join"]
-    
-    ALLDEN_INTERACTION_LINKS = [r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=20701&say=rest"]
-    
-    VELM_INTERACTION_LINKS = [r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=30504&say=join"]
+    TALINIA_INTERACTION_LINKS = [
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=20510",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=20510&say=join",
+    ]
 
-    LIFIRA_INTERACTION_LINKS = [r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=30510",
-                                r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=30510&say=calm",
-                                r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=30510&say=home"]
+    ALLDEN_INTERACTION_LINKS = [
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=20701&say=rest"
+    ]
 
-    LIFIRA_PART2_INTERACTION_LINKS = [r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=30510",
-                                      r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=30510&say=curious",
-                                      r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=30510&say=purpose",
-                                      r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=30510&say=find",
-                                      r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=30510&say=fates"]
-    
-    BUKARU_INTERACTION_LINKS = [r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=30101",
-                                r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=30101&say=code",
-                                r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=30101&say=medallion"]
+    SABALIZ_INTERACTION_LINKS = [
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=30203&greet=1",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=30203&mact=buy&targ_item=10030&quant=1",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=30203&mact=buy&targ_item=10230&quant=1",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=30203&mact=buy&targ_item=20030&quant=1",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=30203&mact=buy&targ_item=20130&quant=1",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=30203&mact=buy&targ_item=20230&quant=1",
+    ]
 
-    MEDALLION_INTERACTION_LINKS = [r"https://www.neopets.com/games/nq2/nq2.phtml?continue=1"]
-    
-    MEDALLION_CENTREPIECE_INTERACTION_LINKS = [r"https://www.neopets.com/games/nq2/nq2.phtml?continue=1"]
-    
-    COLTZAN_INTERACTION_LINKS = [r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=30701"]
-    
-    MEDALLION_GEMSTONE_INTERACTION_LINKS = [r"https://www.neopets.com/games/nq2/nq2.phtml?continue=1"]
+    VELM_INTERACTION_LINKS = [
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=30504&say=join"
+    ]
 
-    BRAIN_TREE_INTERACTION_LINKS = [r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=40501",
-                                    r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=40501&say=adventurers",
-                                    r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=40501&say=yes",
-                                    r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=40501&say=how",
-                                    r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=40501&say=anything"]
+    LIFIRA_INTERACTION_LINKS = [
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=30510",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=30510&say=calm",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=30510&say=home",
+    ]
+
+    LIFIRA_PART2_INTERACTION_LINKS = [
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=30510",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=30510&say=curious",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=30510&say=purpose",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=30510&say=find",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=30510&say=fates",
+    ]
+
+    BUKARU_INTERACTION_LINKS = [
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=30101",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=30101&say=code",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=30101&say=medallion",
+    ]
+
+    MEDALLION_INTERACTION_LINKS = [
+        r"https://www.neopets.com/games/nq2/nq2.phtml?continue=1"
+    ]
+
+    MEDALLION_CENTREPIECE_INTERACTION_LINKS = [
+        r"https://www.neopets.com/games/nq2/nq2.phtml?continue=1"
+    ]
+
+    COLTZAN_INTERACTION_LINKS = [
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=30701"
+    ]
+
+    MEDALLION_GEMSTONE_INTERACTION_LINKS = [
+        r"https://www.neopets.com/games/nq2/nq2.phtml?continue=1"
+    ]
+
+    BRAIN_TREE_INTERACTION_LINKS = [
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=40501",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=40501&say=adventurers",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=40501&say=yes",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=40501&say=how",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=40501&say=anything",
+    ]
 
     # This guy gives a bunch of powerful potions that can be used for Terask II fight
-    AUGUR_FAUNT_INTERACTION_LINKS = [r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=40510&say=rest",
-                                     r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=40510&greet=1",
-                                     r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=40510&mact=buy&targ_item=30208&quant=10",
-                                     r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=40510&mact=buy&targ_item=30208&quant=10",
-                                     r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=40510&mact=buy&targ_item=30403&quant=5",
-                                     r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=40510&mact=buy&targ_item=30308&quant=10",
-                                     r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=40510&mact=buy&targ_item=30308&quant=10",
-                                     r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=40510&mact=buy&targ_item=30109&quant=10",
-                                     r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=40510&mact=buy&targ_item=30109&quant=10"]
+    AUGUR_FAUNT_INTERACTION_LINKS = [
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=40510&say=rest",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=40510&greet=1",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=40510&mact=buy&targ_item=30208&quant=10",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=40510&mact=buy&targ_item=30208&quant=10",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=40510&mact=buy&targ_item=30403&quant=5",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=40510&mact=buy&targ_item=30308&quant=10",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=40510&mact=buy&targ_item=30308&quant=10",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=40510&mact=buy&targ_item=30109&quant=10",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=40510&mact=buy&targ_item=30109&quant=10",
+    ]
 
-    CAERELI_INTERACTION_LINKS = [r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=50703&greet=1",
-                                 r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=50703&mact=buy&targ_item=10053&quant=1",
-                                 r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=50703&mact=buy&targ_item=10253&quant=1"]
-    
-    DELERI_INTERACTION_LINKS = [r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=50701&say=rest"]
+    CAERELI_INTERACTION_LINKS = [
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=50703&greet=1",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=50703&mact=buy&targ_item=10053&quant=1",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=50703&mact=buy&targ_item=10253&quant=1",
+    ]
 
-    MEKAVA_INTERACTION_LINKS = [r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=50704&greet=1",
-                                r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=50704&mact=buy&targ_item=30111&quant=10",
-                                r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=50704&mact=buy&targ_item=30111&quant=10",
-                                r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=50704&mact=buy&targ_item=30210&quant=10",
-                                r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=50704&mact=buy&targ_item=30210&quant=10",
-                                r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=50704&mact=buy&targ_item=30310&quant=10",
-                                r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=50704&mact=buy&targ_item=30310&quant=10"]
+    DELERI_INTERACTION_LINKS = [
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=50701&say=rest"
+    ]
 
-    LUSINA_INTERACTION_LINKS = [r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=50501",
-                                r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=50501&say=who",
-                                r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=50501&say=what",
-                                r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=50501&say=faerie"]
+    MEKAVA_INTERACTION_LINKS = [
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=50704&greet=1",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=50704&mact=buy&targ_item=30111&quant=10",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=50704&mact=buy&targ_item=30111&quant=10",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=50704&mact=buy&targ_item=30210&quant=10",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=50704&mact=buy&targ_item=30210&quant=10",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=50704&mact=buy&targ_item=30310&quant=10",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=merch&targ=50704&mact=buy&targ_item=30310&quant=10",
+    ]
 
-    STENVELA_INTERACTION_LINKS = [r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=50602",
-                                  r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=50602&say=who",
-                                  r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=50602&say=you"]
-    
-    VITRINI_INTERACTION_LINKS = [r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=50605",
-                                 r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=50605&say=not",
-                                 r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=50605&say=rest"]
-    
-    VITRINI_KEY_INTERACTION_LINKS = [r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=50605&say=devil3"]
+    LUSINA_INTERACTION_LINKS = [
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=50501",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=50501&say=who",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=50501&say=what",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=50501&say=faerie",
+    ]
 
-    LYRA_INTERACTION_LINKS = [r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=50606",
-                              r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=50606&say=who",
-                              r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=50606&say=help",
-                              r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=50606&say=rest"]
+    STENVELA_INTERACTION_LINKS = [
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=50602",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=50602&say=who",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=50602&say=you",
+    ]
+
+    VITRINI_INTERACTION_LINKS = [
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=50605",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=50605&say=not",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=50605&say=rest",
+    ]
+
+    VITRINI_KEY_INTERACTION_LINKS = [
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=50605&say=devil3"
+    ]
+
+    LYRA_INTERACTION_LINKS = [
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=50606",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=50606&say=who",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=50606&say=help",
+        r"https://www.neopets.com/games/nq2/nq2.phtml?act=talk&targ=50606&say=rest",
+    ]
 
     def __init__(self, current_page: NeopetsPage) -> OverworldPage:
         logger.info("NPC Handler initialized")
@@ -199,7 +266,7 @@ class NpcHandler:
 
     def get_medallion_centrepiece(self) -> None:
         self.talk_with_npc(NpcHandler.MEDALLION_CENTREPIECE_INTERACTION_LINKS)
-    
+
     def get_medallion_gemstone(self) -> None:
         self.talk_with_npc(NpcHandler.MEDALLION_GEMSTONE_INTERACTION_LINKS)
 
@@ -235,3 +302,6 @@ class NpcHandler:
 
     def talk_with_tebor(self) -> None:
         self.talk_with_npc(NpcHandler.TEBOR_INTERACTION_LINKS)
+
+    def talk_with_sabaliz(self) -> None:
+        self.talk_with_npc(NpcHandler.SABALIZ_INTERACTION_LINKS)

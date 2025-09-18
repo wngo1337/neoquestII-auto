@@ -40,7 +40,7 @@ class BattlePage(NeopetsPage):
     # Also need one for casting a spell on invalid target
 
     RAMTOR_FLEE_TEXT = "Ramtor grunts as he is struck"
-    
+
     FAERIE_THIEF_FLEE1_TEXT = "The Faerie Thief leaps away"
     FAERIE_THIEF_FLEE2_TEXT = "The Faerie Thief stumbles back"
 
@@ -152,7 +152,11 @@ class BattlePage(NeopetsPage):
                     if character_name_tag:
                         character_name = character_name_tag.get_text().strip()
                     else:
-                        text_elements = [str(cont).strip() for cont in parent_td.contents if isinstance(cont, NavigableString)]
+                        text_elements = [
+                            str(cont).strip()
+                            for cont in parent_td.contents
+                            if isinstance(cont, NavigableString)
+                        ]
                         for text in text_elements:
                             if text in BattlePage.ALLY_NAMES:
                                 character_name = text
@@ -167,8 +171,8 @@ class BattlePage(NeopetsPage):
                     )
 
                 if (
-                        character_name in BattlePage.ALLY_NAMES
-                        and character_name not in added_chars.keys()
+                    character_name in BattlePage.ALLY_NAMES
+                    and character_name not in added_chars.keys()
                 ):
                     print(
                         f"Adding entry to character list: {character_name} - {raw_hp_text}"
@@ -196,6 +200,11 @@ class BattlePage(NeopetsPage):
         # NOW CHECK IF EACH POTION IS IN THE STRING!!!
         available_potions = []
         for potion_id, (potion_name, heal_val) in PotionHandler.POTIONS.items():
+            # TODO: figure out a better way to handle scenario where last potion was just used
+            # It causes potion text to show up in page but there is no more of that potion
+            # TODO: figure out way to allow consecutive potion usage
+            # As result of above, potion will never be used twice in a row because potion use text makes it appear in page HTML
+            # Not really a huge issue, but not the intended way of using potions
             if potion_name in page_html and f"used a {potion_name}" not in page_html:
                 available_potions.append(potion_name)
         return available_potions
@@ -208,7 +217,10 @@ class BattlePage(NeopetsPage):
         :return:
         """
         page_html = self.get_page_content()
-        if BattlePage.ALREADY_DEFEATED_TARGET_TEXT in page_html or BattlePage.INVALID_CASTING_TARGET_TEXT in page_html:
+        if (
+            BattlePage.ALREADY_DEFEATED_TARGET_TEXT in page_html
+            or BattlePage.INVALID_CASTING_TARGET_TEXT in page_html
+        ):
             return True
         else:
             return False
@@ -219,9 +231,10 @@ class BattlePage(NeopetsPage):
         Return a BattleResultPage object.
         """
         page_html = self.get_page_content()
-        if BattlePage.RAMTOR_FLEE_TEXT in page_html\
-                or BattlePage.FAERIE_THIEF_FLEE1_TEXT in page_html\
-                or BattlePage.FAERIE_THIEF_FLEE2_TEXT in page_html:
+        if (
+            BattlePage.RAMTOR_FLEE_TEXT in page_html
+            or BattlePage.FAERIE_THIEF_FLEE1_TEXT in page_html
+            or BattlePage.FAERIE_THIEF_FLEE2_TEXT in page_html
+        ):
             return True
         return False
-

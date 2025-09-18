@@ -122,8 +122,8 @@ class BattleHandler:
             )
             return True
         elif (
-                self.battle_page.page_instance.locator(BattlePage.END_FIGHT_LOCATOR).count()
-                > 0
+            self.battle_page.page_instance.locator(BattlePage.END_FIGHT_LOCATOR).count()
+            > 0
         ):
             logger.info("The battle is over! Passing off control to the next method...")
             return True
@@ -254,7 +254,7 @@ class BattleHandler:
         """
         Takes current and max HP values and determines the most efficient potion to use.
         If the player does not have that potion, then it checks the next viable potion on the list.
-        If the player has no potions,
+        If the player has no potions, then just return -1 and handle in calling method.
         """
         ranked_potions = PotionHandler.get_best_potions_by_efficiency(
             current_hp, max_hp
@@ -371,7 +371,8 @@ class BattleHandler:
         return self.battle_page
 
     def handle_mipsy_turn(self):
-        # TODO: handle group haste!!!
+        # This will try to cast Group Haste even if Mipsy doesn't have it
+        # It wastes a page load, but that is not a huge issue
         hp_vals = self.battle_page.get_character_hp_vals()["Mipsy"]
         mipsy_current_hp = hp_vals["current_hp"]
         mipsy_max_hp = hp_vals["max_hp"]
@@ -399,8 +400,8 @@ class BattleHandler:
 
         # Start of battle OR 3 turns have passed
         if (
-                self.mipsy_turns_elapsed_counter == -1
-                or self.mipsy_turns_elapsed_counter >= 4
+            self.mipsy_turns_elapsed_counter == -1
+            or self.mipsy_turns_elapsed_counter >= 4
         ):
             haste_spellcast_url = self.PLAYER_UNTARGETED_SPELLCAST_URL_TEMPLATE.format(
                 SkillpointHandler.MipsySkill.GROUP_HASTE.value,
@@ -514,8 +515,8 @@ class BattleHandler:
                 )
 
         if (
-                self.velm_turns_elapsed_counter == -1
-                or self.velm_turns_elapsed_counter >= 4
+            self.velm_turns_elapsed_counter == -1
+            or self.velm_turns_elapsed_counter >= 4
         ):
             shield_spellcast_url = self.PLAYER_UNTARGETED_SPELLCAST_URL_TEMPLATE.format(
                 SkillpointHandler.VelmSkill.GROUP_SHIELD.value,
