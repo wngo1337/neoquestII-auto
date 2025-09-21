@@ -108,13 +108,16 @@ class Autoplayer:
         for step in path:
             self.overworld_handler.take_step(step)
             if self.overworld_handler.is_overworld():
+                logger.info("Still on an overworld page after movement action")
                 # We took a step and it is still the overworld
-                continue
-            else:
+            elif self.overworld_handler.is_battle_start():
+                logger.info("Entering a battle...")
                 # We landed on a battle start page, so initialize the BattleHandler pages and win battle
                 self.battle_handler.start_battle(self.overworld_handler.overworld_page)
                 self.battle_handler.win_battle()
                 self.overworld_handler.overworld_page = self.battle_handler.end_battle()
+            else:
+                raise Exception("We are not on either an overworld page or battle start page after a movement action!!!")
         return self.overworld_handler.overworld_page
 
     # def get_current_page_type(self):
@@ -746,177 +749,168 @@ class Autoplayer:
         self.follow_path("11")
 
     def complete_act4_meuka(self) -> None:
-        pass
         # Walk to starting tile
-        # self.follow_path("628")
+        self.follow_path("628")
 
         # # Walk to Meuka
-        # # self.follow_path("2628822222222822888844444477774777111111555111")
-        # self.follow_path("1111111111444444444444444444488222488844444444444711535533336251533363335111174448444")
-        # self.grind_battles(100)
-        # self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.ROHANE, SkillpointHandler.RohaneSkill.STUN.value, 2)
-        # self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.MIPSY, SkillpointHandler.MipsySkill.CASTING_HASTE.value, 2)
-        # self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.TALINIA, SkillpointHandler.TaliniaSkill.MAGIC_RESIST.value, 2)
-        # self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.VELM, SkillpointHandler.VelmSkill.CASTING_HASTE.value, 2)
-        # # I think this actually fights Meuka for you lol
-        # self.follow_path("44844488877111533331133")
-        # # Walk to Von Roo for next script start location
-        # self.follow_path("55")
-        #
+        self.follow_path("2628822222222822888844444477774777111111555111")
+        self.follow_path("1111111111444444444444444444488222488844444444444711535533336251533363335111174448444")
+        self.grind_battles(100)
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.ROHANE, SkillpointHandler.RohaneSkill.CRIT.value, 2)
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.MIPSY, SkillpointHandler.MipsySkill.GROUP_HASTE.value, 2)
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.TALINIA, SkillpointHandler.TaliniaSkill.MAGIC_RESIST.value, 2)
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.VELM, SkillpointHandler.VelmSkill.CASTING_HASTE.value, 2)
+        # I think this actually fights Meuka for you lol
+        self.follow_path("448444888771115333311333")
+        # Walk to Von Roo for next script start location
+        self.follow_path("55")
 
     def complete_act4_spider_grundo(self) -> None:
-        pass
-        # # Walk to the cave
-        # self.follow_path("5755774444444844844444474488222222222228884444777778844444444828844447115174448888447772")
-        # # Grind in the middle
-        # self.follow_path("4444448888888884444477777777488888822222228828222822626663363335355177474711533633333333333")
-        # self.grind_battles(100)
-        # self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.ROHANE, SkillpointHandler.RohaneSkill.MAGIC_RESIST.value, 2)
-        # self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.MIPSY, SkillpointHandler.MipsySkill.GROUP_HASTE.value, 2)
-        # self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.TALINIA, SkillpointHandler.TaliniaSkill.MAGIC_RESIST.value, 2)
-        # self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.VELM, SkillpointHandler.VelmSkill.CASTING_HASTE.value, 2)
-        # self.follow_path("3333333333333333333388888888844444488844444882")
-        # # Beat Spider Grundo and then walk up to him again
-        # self.follow_path("22")
+        # Walk to the cave
+        self.follow_path("5755774444444844844444474488222222222228884444777778844444444828844447115174448888447772")
+        # Grind in the middle
+        self.follow_path("4444448888888884444477777777488888822222228828222822626663363335355177474711533633333333333")
+        self.grind_battles(100)
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.ROHANE, SkillpointHandler.RohaneSkill.MAGIC_RESIST.value, 2)
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.MIPSY, SkillpointHandler.MipsySkill.GROUP_HASTE.value, 2)
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.TALINIA, SkillpointHandler.TaliniaSkill.MAGIC_RESIST.value, 2)
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.VELM, SkillpointHandler.VelmSkill.CASTING_HASTE.value, 2)
+        self.follow_path("3333333333333333333388888888844444488844444882")
+        # Beat Spider Grundo and then walk up to him again
+        self.follow_path("22")
 
     def complete_act4_faeries(self) -> None:
-        pass
-        # # Walk to Balthazar in the forest
-        # self.follow_path("63363333333333333633333622226662226662222222888226666663333333333335553")
+        # Walk to Balthazar in the forest
+        self.follow_path("63363333333333333633333622226662226662222222888226666663333333333335553")
         # Walk through the fun house and grind a lot to prep for faeries
-        # self.follow_path("5171111111111177747533")
-        # self.grind_battles(200)
-        # self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.ROHANE, SkillpointHandler.RohaneSkill.MAGIC_RESIST.value, 3)
-        # self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.MIPSY, SkillpointHandler.MipsySkill.MELEE_DEFENSE.value, 3)
-        # self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.TALINIA, SkillpointHandler.TaliniaSkill.INCREASE_BOW_DAMAGE.value, 3)
-        # self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.VELM, SkillpointHandler.VelmSkill.CELESTIAL_HAMMER.value, 3)
-        # self.follow_path("336633555117884444447777753366333553336222284862662844444717488847115117111111533663336263511174444411111")
+        self.follow_path("5171111111111177747533")
+        self.grind_battles(200)
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.ROHANE, SkillpointHandler.RohaneSkill.MAGIC_RESIST.value, 3)
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.MIPSY, SkillpointHandler.MipsySkill.MELEE_DEFENSE.value, 3)
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.TALINIA, SkillpointHandler.TaliniaSkill.INCREASE_BOW_DAMAGE.value, 3)
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.VELM, SkillpointHandler.VelmSkill.CASTING_HASTE.value, 3)
+        self.follow_path("336633555117884444447777753366333553336222284862662844444717488847115117111111533663336263511174444411111")
         # NEED TO TALK TO THE BRAIN TREE!!!
-        # self.npc_handler.talk_with_brain_tree()
+        self.npc_handler.talk_with_brain_tree()
         # Now buy from Auger
-        # self.follow_path("33")
-        # self.npc_handler.talk_with_augur_faunt()
-        # self.follow_path("633336622222222222222222882222226265")
+        self.follow_path("33")
+        self.npc_handler.talk_with_augur_faunt()
+        self.follow_path("633336622222222222222222882222226265")
         # Walk left to fight the faeries -> might be too risky on InSaNe
-        # self.follow_path("3")
+        self.follow_path("3")
 
     def complete_act4_hubrid_nox(self) -> None:
-        pass
-        # # Walk to Tower of Nox
-        # self.follow_path("55555555555555555533333333333333333336666666333555333666622288844747")
-        # # Enter and grind in the middle
-        # self.follow_path("111533351111784556222222228745562265111174475574444")
-        # self.grind_battles(60)
-        # self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.ROHANE, SkillpointHandler.RohaneSkill.MAGIC_RESIST.value, 1)
-        # self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.MIPSY, SkillpointHandler.MipsySkill.CASTING_HASTE.value, 1)
-        # self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.TALINIA, SkillpointHandler.TaliniaSkill.INCREASE_BOW_DAMAGE.value, 1)
-        # self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.VELM, SkillpointHandler.VelmSkill.CELESTIAL_HAMMER.value, 1)
-        # self.follow_path("4442226336663366447557753351114482222633628444444777115512263622226555111717748888226715333335")
+        # Walk to Tower of Nox
+        self.follow_path("55555555555555555533333333333333333336666666333555333666622288844747")
+        # Enter and grind in the middle
+        self.follow_path("111533351111784556222222228745562265111174475574444")
+        self.grind_battles(60)
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.ROHANE, SkillpointHandler.RohaneSkill.CRIT.value, 1)
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.MIPSY, SkillpointHandler.MipsySkill.CASTING_HASTE.value, 1)
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.TALINIA, SkillpointHandler.TaliniaSkill.MAGIC_RESIST.value, 1)
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.VELM, SkillpointHandler.VelmSkill.CASTING_HASTE.value, 1)
+        self.follow_path("4442226336663366447557753351114482222633628444444777115512263622226555111717748888226715333335")
 
         # Now fight Hubrid Nox
         # Ends in position that we need for next script
-        # self.follow_path("5")
+        self.follow_path("5")
 
     def complete_act4_esophagor(self) -> None:
-        pass
-        # self.follow_path("3518826666666628888884444444444488478848888448488884")
-        # self.follow_path("44")
+        self.follow_path("3518826666666628888884444444444488478848888448488884")
+        self.follow_path("44")
 
     def complete_act5_fallen_angel(self) -> None:
-        pass
-        # self.follow_path("2222228888288888844444888888822222228688")
-        # self.follow_path("71")
-        # self.follow_path("66622222626262622666222288228222266633662888888447744482")
+        self.follow_path("2222228888288888844444888888822222228688")
+        self.follow_path("71")
+        self.follow_path("66622222626262622666222288228222266633662888888447744482")
         # Should be at the Fallen Angel I think
-        # self.follow_path("84")
-        #
-        # # Start off where we beat Fallen Angel
-        # self.follow_path("4444884888222668282622288882282222286633")
-        # self.grind_battles(100)
-        # self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.ROHANE, SkillpointHandler.RohaneSkill.MAGIC_RESIST.value, 2)
-        # self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.MIPSY, SkillpointHandler.MipsySkill.CASTING_HASTE.value, 2)
-        # self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.TALINIA, SkillpointHandler.TaliniaSkill.INCREASE_BOW_DAMAGE.value, 2)
-        # self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.VELM, SkillpointHandler.VelmSkill.CELESTIAL_HAMMER.value, 2)
-        # self.follow_path("33662222228882662226222844444474884447774482274777444488884")
+        self.follow_path("84")
+
+        # Start off where we beat Fallen Angel
+        self.follow_path("4444884888222668282622288882282222286633")
+        self.grind_battles(100)
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.ROHANE, SkillpointHandler.RohaneSkill.CRIT.value, 3)
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.MIPSY, SkillpointHandler.MipsySkill.CASTING_HASTE.value, 3)
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.TALINIA, SkillpointHandler.TaliniaSkill.INCREASE_BOW_DAMAGE.value, 3)
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.VELM, SkillpointHandler.VelmSkill.MELEE_DEFENSE.value, 3)
+        self.follow_path("33662222228882662226222844444474884447774482274777444488884")
 
     def complete_act5_devilpuss(self) -> None:
-        pass
-        # self.follow_path("48888444471117711747153333333335111111111174444444444444444444444444444822266222226333")
-        # self.grind_battles(80)
-        # self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.ROHANE, SkillpointHandler.RohaneSkill.MAGIC_RESIST.value, 2)
-        # self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.MIPSY, SkillpointHandler.MipsySkill.CASTING_HASTE.value, 2)
-        # self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.TALINIA, SkillpointHandler.TaliniaSkill.INCREASE_BOW_DAMAGE.value, 2)
-        # self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.VELM, SkillpointHandler.VelmSkill.CELESTIAL_HAMMER.value, 2)
-        # self.follow_path("3336622226636362222663333622288444482222844444444444444444444444447111111115333351111111774444")
-        # self.follow_path("4")
+        self.follow_path("48888444471117711747153333333335111111111174444444444444444444444444444822266222226333")
+        self.grind_battles(80)
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.ROHANE, SkillpointHandler.RohaneSkill.MAGIC_RESIST.value, 2)
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.MIPSY, SkillpointHandler.MipsySkill.CASTING_HASTE.value, 2)
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.TALINIA, SkillpointHandler.TaliniaSkill.INCREASE_BOW_DAMAGE.value, 2)
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.VELM, SkillpointHandler.VelmSkill.CASTING_HASTE.value, 2)
+        self.follow_path("3336622226636362222663333622288444482222844444444444444444444444447111111115333351111111774444")
+        self.follow_path("4")
 
     def complete_act5_faerie_thief(self) -> None:
-        pass
         # Walk to next town
-        # self.follow_path("4444477744447771555553535711777771144448")
-        # self.follow_path("2263")
-        # # Don't really want to buy weapon upgrades here... but we can pick them up for Rohane and Talinia to be safe
-        # self.npc_handler.talk_with_caereli()
-        # self.follow_path("477744822")
-        # # Whoops, this is just resting at the inn
-        # self.npc_handler.talk_with_deleri()
-        # self.follow_path("11536662222263")
-        # self.npc_handler.talk_with_mekava()
-        # self.follow_path("477711111144444444444446")
-        #
+        self.follow_path("4444477744447771555553535711777771144448")
+        self.follow_path("2263")
+        # Don't really want to buy weapon upgrades here... but we can pick them up for Rohane and Talinia to be safe
+        self.npc_handler.talk_with_caereli()
+        self.follow_path("477744822")
+        # Whoops, this is just resting at the inn
+        self.npc_handler.talk_with_deleri()
+        self.follow_path("11536662222263")
+        self.npc_handler.talk_with_mekava()
+        self.follow_path("477711111144444444444446")
+
         # Go to Faerie Thief location
         # I think that surely you will get the Cybunny avatar from random encounters even on normal mode here
-        # self.follow_path("4477115555717177111151511117744488848884844747777771111111")
-        # self.npc_handler.talk_with_lusina()
-        # self.follow_path("711777774444447117444771111551111174482536263362228888866636224444")
-        # self.grind_battles(60)
-        # self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.ROHANE, SkillpointHandler.RohaneSkill.MAGIC_RESIST.value, 2)
-        # self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.MIPSY, SkillpointHandler.MipsySkill.MELEE_DEFENSE.value, 2)
-        # self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.TALINIA, SkillpointHandler.TaliniaSkill.INCREASE_BOW_DAMAGE.value, 2)
-        # self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.VELM, SkillpointHandler.VelmSkill.CELESTIAL_HAMMER.value, 2)
-        # self.follow_path("4448226333333333353")
+        self.follow_path("4477115555717177111151511117744488848884844747777771111111")
+        self.npc_handler.talk_with_lusina()
+        self.follow_path("711777774444447117444771111551111174482536263362228888866636224444")
+        self.grind_battles(60)
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.ROHANE, SkillpointHandler.RohaneSkill.MAGIC_RESIST.value, 2)
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.MIPSY, SkillpointHandler.MipsySkill.MELEE_DEFENSE.value, 2)
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.TALINIA, SkillpointHandler.TaliniaSkill.INCREASE_BOW_DAMAGE.value, 2)
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.VELM, SkillpointHandler.VelmSkill.CELESTIAL_HAMMER.value, 2)
+        self.follow_path("4448226333333333353")
 
         # Walk one step to fight Faerie Thief first encounter
-        # self.follow_path("3")
-        # self.follow_path("44844444444447115515357755555111744717484533622222882222223333362263333366633622263333333333")
-        # self.grind_battles(60)
-        # self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.ROHANE, SkillpointHandler.RohaneSkill.MAGIC_RESIST.value, 1)
-        # self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.MIPSY, SkillpointHandler.MipsySkill.MELEE_DEFENSE.value, 1)
-        # self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.TALINIA, SkillpointHandler.TaliniaSkill.INCREASE_BOW_DAMAGE.value, 1)
-        # self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.VELM, SkillpointHandler.VelmSkill.CELESTIAL_HAMMER.value, 1)
-        # self.follow_path("333333351115555117111744777111777748448222222447482666333362222217482222")
-        # self.follow_path("6")
+        self.follow_path("3")
+        self.follow_path("44844444444447115515357755555111744717484533622222882222223333362263333366633622263333333333")
+        self.grind_battles(60)
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.ROHANE, SkillpointHandler.RohaneSkill.MAGIC_RESIST.value, 1)
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.MIPSY, SkillpointHandler.MipsySkill.MELEE_DEFENSE.value, 1)
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.TALINIA, SkillpointHandler.TaliniaSkill.INCREASE_BOW_DAMAGE.value, 1)
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.VELM, SkillpointHandler.VelmSkill.CELESTIAL_HAMMER.value, 1)
+        self.follow_path("333333351115555117111744777111777748448222222447482666333362222217482222")
+        self.follow_path("6")
 
-        # self.follow_path("7111153622111174444777156335711153356336622226663362262228888228444444444")
-        # self.grind_battles(80)
-        # self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.ROHANE, SkillpointHandler.RohaneSkill.DAMAGE_INCREASE.value, 1)
-        # self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.MIPSY, SkillpointHandler.MipsySkill.GROUP_HASTE.value, 1)
-        # self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.TALINIA, SkillpointHandler.TaliniaSkill.INCREASE_BOW_DAMAGE.value, 1)
-        # self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.VELM, SkillpointHandler.VelmSkill.CELESTIAL_HAMMER.value, 1)
-        # self.follow_path("4444444851111111111535111111111111111111151171111177771")
+        self.follow_path("7111153622111174444777156335711153356336622226663362262228888228444444444")
+        self.grind_battles(80)
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.ROHANE, SkillpointHandler.RohaneSkill.DAMAGE_INCREASE.value, 1)
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.MIPSY, SkillpointHandler.MipsySkill.GROUP_HASTE.value, 1)
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.TALINIA, SkillpointHandler.TaliniaSkill.INCREASE_BOW_DAMAGE.value, 1)
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.VELM, SkillpointHandler.VelmSkill.CELESTIAL_HAMMER.value, 1)
+        self.follow_path("4444444851111111111535111111111111111111151171111177771")
 
         # Finally, fight the Faerie Thief last time
-        # self.follow_path("1")
-        # self.follow_path("11111111")
+        self.follow_path("1")
+        self.follow_path("11111111")
 
     def complete_act5_finale(self) -> None:
-        # self.npc_handler.talk_with_stenvela()
-        # self.follow_path("44444447111177774471557444828711111533335555335111744444444447111111111153333333362222226333622222636636266263533368222284482222222"
-        #                  "63366333333335551111111111744784471111533351774877111555336665111111782877711174444447448444488211")
-        # self.npc_handler.talk_with_vitrini()
-        # # Go to right pant devil
-        # self.follow_path("44444448882228444475335744444471115626335156222265351533688634477166632755744828487111178284471782226333333684486333355511153333333")
-        # # Go to left pant devil
-        # self.follow_path("333333333333666222633335744753333335111782844717822447174482266284335518884251771153362633315626335156222844444486336844447111777444444444444")
+        self.npc_handler.talk_with_stenvela()
+        self.follow_path("44444447111177774471557444828711111533335555335111744444444447111111111153333333362222226333622222636636266263533368222284482222222"
+                         "63366333333335551111111111744784471111533351774877111555336665111111782877711174444447448444488211")
+        self.npc_handler.talk_with_vitrini()
+        # Go to right pant devil
+        self.follow_path("44444448882228444475335744444471115626335156222265351533688634477166632755744828487111178284471782226333333684486333355511153333333")
+        # Go to left pant devil
+        self.follow_path("333333333333666222633335744753333335111782844717822447174482266284335518884251771153362633315626335156222844444486336844447111777444444444444")
         # IMPORTANT: must assemble key!
-        # self.npc_handler.talk_with_vitrini_key()
-        # self.follow_path("44444448882228884444822222222226663333333333622222222228717444444444486334822636217884751533511533688226336211147")
-        # self.follow_path("11")
+        self.npc_handler.talk_with_vitrini_key()
+        self.follow_path("44444448882228884444822222222226663333333333622222222228717444444444486334822636217884751533511533688226336211147")
+        self.follow_path("11")
         # Centre between pillars
-        # self.follow_path("4")
+        self.follow_path("4")
         # Now walk all the way over
-        # self.follow_path("1111111111111111117744444444447771111111111533335551115553333333333333333333666222666333362222222222888444444444482"
-        #                  "222222222263515711571533362222666226535511111111144863622284444822228444444451111111551533622222222263336")
+        self.follow_path("1111111111111111117744444444447771111111111533335551115553333333333333333333666222666333362222222222888444444444482"
+                         "222222222263515711571533362222666226535511111111144863622284444822228444444451111111551533622222222263336")
         # Rest with Lyra - no need to buy potions since we are maxed from before
-        # self.npc_handler.talk_with_lyra()
+        self.npc_handler.talk_with_lyra()
         self.follow_path("511111111111528888888")

@@ -5,7 +5,7 @@ import time
 from enum import Enum
 from typing import List
 
-from playwright.sync_api import Page, Locator
+from playwright.sync_api import Page, Locator, TimeoutError
 
 from .neopets_page import NeopetsPage
 
@@ -126,24 +126,24 @@ class OverworldPage(NeopetsPage):
         for attempt in range(num_retries):
             try:
                 with self.page_instance.expect_navigation():
-                    self.page_instance.goto(movement_url)
                     logger.info(f"Attempting to visit {movement_url} ...")
+                    self.page_instance.goto(movement_url, timeout=90000)
                     self.page_instance.wait_for_load_state("load")
                 return
-            except Exception as e:
-                logger.warning(f"Attempt {attempt} failed: {e}")
+            except TimeoutError as te:
+                logger.warning(f"Attempt {attempt} to navigate failed: {te}")
                 try:
                     logger.info(
                         "Attempting to reload the page and determine the result"
                     )
                     self.page_instance.goto("about:blank")
-                    time.sleep(2)
-                    self.page_instance.goto(OverworldPage.MAIN_GAME_URL)
-                    self.page_instance.wait_for_load_state("load")
-                    # Refresh one more time in case it doesn't pick up the refreshed content
-                    self.page_instance.goto(OverworldPage.MAIN_GAME_URL)
-                    self.page_instance.wait_for_load_state("load")
-                    time.sleep(2)
+                    # This is really bad practice but it works, so eh...
+                    time.sleep(3)
+                    self.page_instance.goto(OverworldPage.MAIN_GAME_URL, timeout=90000)
+                    # Refresh once more and wait to ensure it loaded
+                    with self.page_instance.expect_navigation():
+                        self.page_instance.goto(OverworldPage.MAIN_GAME_URL, timeout=90000)
+                        self.page_instance.wait_for_load_state("load")
                     new_map_coords = self.get_map_coords()
                     if set(prev_map_coords) == set(new_map_coords):
                         logger.info(
@@ -155,9 +155,10 @@ class OverworldPage(NeopetsPage):
                             "The page failed to load but the action was performed."
                         )
                         return
-                except Exception as reload_error:
+                except TimeoutError as reload_error:
                     logger.warning(f"Also failed to reload the page: {reload_error}")
         logger.error(f"Failed to visit URL after {num_retries} attempts.")
+        # TODO: throw a more specific exception
         raise Exception("Max retries exceeded for visit_url_with_wait")
 
     def click_normal_movement_button(self) -> None:

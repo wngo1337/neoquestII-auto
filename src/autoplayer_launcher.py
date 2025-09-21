@@ -191,7 +191,7 @@ class AutoplayerLauncher:
                     print("Select an Act 5 subsection to complete:")
                     print("1. Defeat the Fallen Angel")
                     print("2. Defeat Devilpuss")
-                    print("3. Complete Faerie Thief questline and all running arround")
+                    print("3. Complete Faerie Thief questline and all running around")
                     print(
                         "4. Complete act 5 Finale -> does NOT include King Terask II fight"
                     )
@@ -253,7 +253,7 @@ def main(use_neopass: bool) -> None:
         # current_coordinates = (
         #     launcher.autoplayer.overworld_handler.get_overworld_map_coordinates()
         # )
-
+        #
         # print(
         #     f"Do coordinates match after page refresh but no movement? {prev_coordinates == current_coordinates}"
         # )

@@ -4,8 +4,8 @@ from bs4 import BeautifulSoup, NavigableString
 
 from playwright.sync_api import Page
 
-from .battle_result_page import BattleResultPage
-from .neopets_page import NeopetsPage
+from src.Pages.battle_result_page import BattleResultPage
+from src.Pages.neopets_page import NeopetsPage
 from src.potion_handler import PotionHandler
 
 from typing import Dict, List
@@ -174,9 +174,9 @@ class BattlePage(NeopetsPage):
                     character_name in BattlePage.ALLY_NAMES
                     and character_name not in added_chars.keys()
                 ):
-                    print(
-                        f"Adding entry to character list: {character_name} - {raw_hp_text}"
-                    )
+                    # print(
+                    #     f"Adding entry to character list: {character_name} - {raw_hp_text}"
+                    # )
                     hp_vals = raw_hp_text.split("/")
                     current_hp = int(hp_vals[0])
                     max_hp = int(hp_vals[1])

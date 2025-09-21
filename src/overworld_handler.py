@@ -52,6 +52,10 @@ class OverworldHandler:
         """
         return self.overworld_page.nav_map.count() > 0
 
+    def is_battle_start(self) -> bool:
+        """Used to determine if the result of a movement action was a random encounter."""
+        return "You are attacked by" in self.overworld_page.get_page_content()
+
     def take_step(self, direction: str) -> OverworldPage | BattleStartPage:
         """
         Takes a single step on the overworld map.
@@ -68,6 +72,7 @@ class OverworldHandler:
         else:
             return BattleStartPage(self.overworld_page.page_instance)
 
+    @staticmethod
     def invert_path(self, map_path: str) -> str:
         """
         Takes a path of directions and returns a string that theoretically returns the user to their starting location.
