@@ -140,6 +140,10 @@ It's actually pretty common at level 1 if you get unlucky, and only at level 1. 
 program rather than respawning first, and go back to the proper starting point before running the
 method again.
 
+**I got logged out while playing**
+
+Honestly, I didn't think of that scenario until I was writing this. Remind me to fix that later.
+
 ## Starting Locations For Each Completion Method
 
 This section is mainly for knowing where to walk back to if your program gets desynced.
