@@ -6,18 +6,16 @@ It should have a PageFactory instance so that it can generate and return pages b
 sees, and probably also a PageParser for handling the extraction of page info.
 """
 
-from login_handler import LoginHandler
-from overworld_handler import OverworldHandler
-from battle_handler import BattleHandler
-from skillpoint_handler import SkillpointHandler
-from inventory_handler import InventoryHandler
-from npc_handler import NpcHandler
-from Pages.neopets_page import NeopetsPage
-from Pages.overworld_page import OverworldPage
-
 import logging
 
-from page_parser import PageParser
+from src.Pages.neopets_page import NeopetsPage
+from src.Pages.overworld_page import OverworldPage
+from src.battle_handler import BattleHandler
+from src.inventory_handler import InventoryHandler
+from src.login_handler import LoginHandler
+from src.npc_handler import NpcHandler
+from src.overworld_handler import OverworldHandler
+from src.skillpoint_handler import SkillpointHandler
 
 logger = logging.getLogger(__name__)
 
@@ -117,7 +115,9 @@ class Autoplayer:
                 self.battle_handler.win_battle()
                 self.overworld_handler.overworld_page = self.battle_handler.end_battle()
             else:
-                raise Exception("We are not on either an overworld page or battle start page after a movement action!!!")
+                # TODO: create and throw a new exception when movement results in an unknown page type
+                raise Exception(
+                    "We are not on either an overworld page or battle start page after a movement action!!!")
         return self.overworld_handler.overworld_page
 
     # def get_current_page_type(self):
@@ -182,6 +182,7 @@ class Autoplayer:
         self.follow_path("33333357111111117111111882")
         self.grind_battles(100)
 
+        # Rohane: 7 stun
         self.skillpoint_handler.try_spend_multiple_skillpoints(
             SkillpointHandler.AllyType.ROHANE,
             SkillpointHandler.RohaneSkill.STUN.value,
@@ -200,11 +201,14 @@ class Autoplayer:
     def complete_act1_zombom(self) -> None:
         # The Underground Cave drops close to zero potions for some reason
         # Get as close as we can to level 11 as possible before moving on
-        self.grind_battles(500, "7777")
+        # Pretty sure you can grind for hundreds of battles and still only reach level 11
+        self.grind_battles(600, "7777")
+
+        # Rohane: 10 stun
         self.skillpoint_handler.try_spend_multiple_skillpoints(
             SkillpointHandler.AllyType.ROHANE,
             SkillpointHandler.RohaneSkill.STUN.value,
-            4,
+            3,
         )
         # Sprint to Zombom and do NOT fight in the cave because the potion drops are extremely low
         # Go buy gear from Tebor
@@ -216,7 +220,9 @@ class Autoplayer:
         self.inventory_handler.equip_equipment(
             InventoryHandler.RUSTY_CHAIN_TUNIC_ID, InventoryHandler.AllyId.ROHANE.value
         )
+        # Walk to the cave
         self.follow_path("447777")
+        # Head all the way through to Zombom
         self.follow_path(
             "77777777777488844882222222622288888444447777774444488888888844888288848228444"
             "77777771111517744362222222222222284453555511111222"
@@ -232,6 +238,7 @@ class Autoplayer:
         self.npc_handler.recruit_mipsy()
 
         # Mipsy only has 58 HP at level 12 - can't get full value of direct damage right away
+        # Mipsy: 11 direct damage - gained a level from Zombom I think
         self.skillpoint_handler.try_spend_multiple_skillpoints(
             SkillpointHandler.AllyType.MIPSY,
             SkillpointHandler.MipsySkill.DIRECT_DAMAGE.value,
@@ -242,18 +249,19 @@ class Autoplayer:
         self.follow_path("48882")
         self.grind_battles(200, "88")
 
+        # Rohane: 13 stun
         self.skillpoint_handler.try_spend_multiple_skillpoints(
             SkillpointHandler.AllyType.ROHANE,
             SkillpointHandler.RohaneSkill.STUN.value,
             2,
         )
+        # Mipsy: 13 direct damage
         self.skillpoint_handler.try_spend_multiple_skillpoints(
             SkillpointHandler.AllyType.MIPSY,
             SkillpointHandler.MipsySkill.DIRECT_DAMAGE.value,
             2,
         )
 
-        # At this point, Rohane has 13 in stun, Mipsy has 13 in direct damage - enough investment for entire game
         # Walk from White River City to Fudra (we don't need anything from her, but you can buy)
         self.follow_path(
             "44444444744444448222222666666633333333366666666666666666666666663333517774"
@@ -272,34 +280,36 @@ class Autoplayer:
         )
         self.grind_battles(100)
 
-        # We may only gain one level here, but still try to spend skillpoints
-        self.skillpoint_handler.try_spend_multiple_skillpoints(
-            SkillpointHandler.AllyType.ROHANE,
-            SkillpointHandler.RohaneSkill.STUN.value,
-            2,
-        )
-        self.skillpoint_handler.try_spend_multiple_skillpoints(
-            SkillpointHandler.AllyType.MIPSY,
-            SkillpointHandler.MipsySkill.DIRECT_DAMAGE.value,
-            2,
-        )
+        # # Rohane: 13 stun, 2 haste
+        # self.skillpoint_handler.try_spend_multiple_skillpoints(
+        #     SkillpointHandler.AllyType.ROHANE,
+        #     SkillpointHandler.RohaneSkill.MELEE_HASTE.value,
+        #     2,
+        # )
+        # # mipsy: 13 direct damage, 2 melee defense
+        # self.skillpoint_handler.try_spend_multiple_skillpoints(
+        #     SkillpointHandler.AllyType.MIPSY,
+        #     SkillpointHandler.MipsySkill.MELEE_DEFENSE.value,
+        #     2,
+        # )
 
         self.follow_path("77777744488822266666666666638888")
         # Must talk to the ghost to gain entry
         self.npc_handler.talk_with_withered_ghost()
         self.follow_path("888888888")
         # Train inside the city for a bit because enemies after are quite dangerous if underleveled
-        self.grind_battles(180)
+        self.grind_battles(160)
 
-        # This should basically max out stun for Rohane and Direct Damage for Mipsy
+        # Rohane: 13 stun, 2 haste
         self.skillpoint_handler.try_spend_multiple_skillpoints(
             SkillpointHandler.AllyType.ROHANE,
-            SkillpointHandler.RohaneSkill.STUN.value,
+            SkillpointHandler.RohaneSkill.MELEE_HASTE.value,
             2,
         )
+        # Mipsy: 13 direct damage, 2 melee defense
         self.skillpoint_handler.try_spend_multiple_skillpoints(
             SkillpointHandler.AllyType.MIPSY,
-            SkillpointHandler.MipsySkill.DIRECT_DAMAGE.value,
+            SkillpointHandler.MipsySkill.MELEE_DEFENSE.value,
             2,
         )
         self.follow_path("8888882844444444888882222228882222222284444444484")
@@ -310,11 +320,14 @@ class Autoplayer:
 
     def complete_act1_ramtor1(self) -> None:
         self.grind_battles(200, "222")
+
+        # Rohane: 13 stun, 4 haste
         self.skillpoint_handler.try_spend_multiple_skillpoints(
             SkillpointHandler.AllyType.ROHANE,
             SkillpointHandler.RohaneSkill.MELEE_HASTE.value,
             2,
         )
+        # Mipsy: 13 direct damage, 4 melee defense
         self.skillpoint_handler.try_spend_multiple_skillpoints(
             SkillpointHandler.AllyType.MIPSY,
             SkillpointHandler.MipsySkill.MELEE_DEFENSE.value,
@@ -322,7 +335,8 @@ class Autoplayer:
         )
 
         self.follow_path(
-            "22222222222287744447771177828448222222263333663333351151111562651111111174444477771717111111117777777447444448888888884888444444444777"
+            "22222222222287744447771177828448222222263333663333351151111562651111111174444477771717111111117777777447"
+            "444448888888884888444444444777"
         )
 
         # Lands us one tile below Uthare -> good upgrades, so buy
@@ -331,16 +345,19 @@ class Autoplayer:
         self.follow_path("2888844822")
         self.npc_handler.talk_with_patannis()
         self.follow_path("115533333333333")
-        self.grind_battles(200, "666")
+        self.grind_battles(100, "666")
+
+        # Rohane: 13 stun, 5 haste
         self.skillpoint_handler.try_spend_multiple_skillpoints(
             SkillpointHandler.AllyType.ROHANE,
             SkillpointHandler.RohaneSkill.MELEE_HASTE.value,
-            2,
+            1,
         )
+        # Mipsy: 13 direct damage, 5 melee defense
         self.skillpoint_handler.try_spend_multiple_skillpoints(
             SkillpointHandler.AllyType.MIPSY,
             SkillpointHandler.MipsySkill.MELEE_DEFENSE.value,
-            2,
+            1,
         )
 
         # Now walk to Ramtor 1
@@ -352,16 +369,18 @@ class Autoplayer:
         # Exit the castle, then walk to the tower
         self.follow_path("844")
         self.follow_path("63333333333333366633333333333335555555555535335")
-        # Train outside for a few levels
-        self.grind_battles(100)
+        # Train outside for a few levels - maybe not needed actually
+        # self.grind_battles(100)
         self.follow_path("1111115533")
         self.grind_battles(160)
-        # Should have about 10 points in each?
+
+        # Rohane: 13 stun, 7 haste
         self.skillpoint_handler.try_spend_multiple_skillpoints(
             SkillpointHandler.AllyType.ROHANE,
             SkillpointHandler.RohaneSkill.MELEE_HASTE.value,
             2,
         )
+        # Mipsy: 13 direct damage, 7 melee defense
         self.skillpoint_handler.try_spend_multiple_skillpoints(
             SkillpointHandler.AllyType.MIPSY,
             SkillpointHandler.MipsySkill.MELEE_DEFENSE.value,
@@ -378,12 +397,24 @@ class Autoplayer:
         Go to the cave and beat Leximp to get the wordstone. It is too much of a pain to actually buy stuff though.
         """
         self.follow_path("44")
-        # Keep a reference to original path, but we don't need it
-        # self.follow_path("784444774744444488488288882288881555555555115553333636336333335644")
         self.follow_path(
             "7844447747444444884882888822888815555555551155533336363363333356"
         )
         self.grind_battles(200, "7844444")
+
+        # Rohane: 13 stun, 9 haste
+        self.skillpoint_handler.try_spend_multiple_skillpoints(
+            SkillpointHandler.AllyType.ROHANE,
+            SkillpointHandler.RohaneSkill.MELEE_HASTE.value,
+            2,
+        )
+        # Mipsy: 13 direct damage, 9 melee defense
+        self.skillpoint_handler.try_spend_multiple_skillpoints(
+            SkillpointHandler.AllyType.MIPSY,
+            SkillpointHandler.MipsySkill.MELEE_DEFENSE.value,
+            2,
+        )
+
         self.follow_path(
             "78444477474444441774474444444444447744444477444444444444444444444444444444477777777777771"
         )
@@ -392,17 +423,17 @@ class Autoplayer:
         self.follow_path("1")
         self.grind_battles(300, "115")
 
-        # About 10 points in second skill here
+        # Rohane: 13 stun, 11 haste
         self.skillpoint_handler.try_spend_multiple_skillpoints(
             SkillpointHandler.AllyType.ROHANE,
             SkillpointHandler.RohaneSkill.MELEE_HASTE.value,
-            4,
+            2,
         )
-
+        # Mipsy: 13 direct damage, 11 melee defense
         self.skillpoint_handler.try_spend_multiple_skillpoints(
             SkillpointHandler.AllyType.MIPSY,
             SkillpointHandler.MipsySkill.MELEE_DEFENSE.value,
-            4,
+            2,
         )
 
         self.follow_path(
@@ -413,6 +444,7 @@ class Autoplayer:
         self.follow_path("8")
         self.npc_handler.recruit_talinia()
 
+        # Talinia: 13 ranged attacks, 11 shockwave
         self.skillpoint_handler.try_spend_multiple_skillpoints(
             SkillpointHandler.AllyType.TALINIA,
             SkillpointHandler.TaliniaSkill.RANGED_ATTACKS.value,
@@ -421,12 +453,7 @@ class Autoplayer:
         self.skillpoint_handler.try_spend_multiple_skillpoints(
             SkillpointHandler.AllyType.TALINIA,
             SkillpointHandler.TaliniaSkill.SHOCKWAVE.value,
-            13,
-        )
-        self.skillpoint_handler.try_spend_multiple_skillpoints(
-            SkillpointHandler.AllyType.TALINIA,
-            SkillpointHandler.TaliniaSkill.MELEE_HASTE.value,
-            2,
+            11,
         )
 
     def complete_act2_kolvars_and_grind(self) -> None:
@@ -435,20 +462,25 @@ class Autoplayer:
             "55551155555555555555335333355333333555636333333355155366633336633363511777155366366626"
         )
         # Grind a bit to make sure we are ready for harder monsters up to camp
+        # Rohane 3 damage increase, mipsy 3 haste, talinia 2 haste so far
         self.grind_battles(200)
+
+        # Rohane: 13 stun, 13 haste
         self.skillpoint_handler.try_spend_multiple_skillpoints(
             SkillpointHandler.AllyType.ROHANE,
             SkillpointHandler.RohaneSkill.MELEE_HASTE.value,
             2,
         )
+        # Mipsy: 13 direct damage, 13 melee defense
         self.skillpoint_handler.try_spend_multiple_skillpoints(
             SkillpointHandler.AllyType.MIPSY,
             SkillpointHandler.MipsySkill.MELEE_DEFENSE.value,
             2,
         )
+        # Talinia: 13 ranged attacks, 13 shockwave
         self.skillpoint_handler.try_spend_multiple_skillpoints(
             SkillpointHandler.AllyType.TALINIA,
-            SkillpointHandler.TaliniaSkill.MELEE_HASTE.value,
+            SkillpointHandler.TaliniaSkill.SHOCKWAVE.value,
             2,
         )
 
@@ -470,16 +502,20 @@ class Autoplayer:
 
         # Grind a LOT to be safe and get ready for Act 3
         self.grind_battles(250, "555")
+
+        # Rohane: 13 stun, 13 haste, 3 damage
         self.skillpoint_handler.try_spend_multiple_skillpoints(
             SkillpointHandler.AllyType.ROHANE,
             SkillpointHandler.RohaneSkill.DAMAGE_INCREASE.value,
             3,
         )
+        # Mipsy: 13 direct damage, 13 melee defense, 3 group haste
         self.skillpoint_handler.try_spend_multiple_skillpoints(
             SkillpointHandler.AllyType.MIPSY,
             SkillpointHandler.MipsySkill.GROUP_HASTE.value,
             3,
         )
+        # Talinia: 13 ranged attacks, 13 shockwave, 3 melee haste
         self.skillpoint_handler.try_spend_multiple_skillpoints(
             SkillpointHandler.AllyType.TALINIA,
             SkillpointHandler.TaliniaSkill.MELEE_HASTE.value,
@@ -535,16 +571,20 @@ class Autoplayer:
         # Grind in the desert for a bit to make sure we aren't underleveled
         self.grind_battles(100)
         # Invest skillpoints if we have them
+
+        # Rohane: 13 stun, 13 haste, 5 damage
         self.skillpoint_handler.try_spend_multiple_skillpoints(
             SkillpointHandler.AllyType.ROHANE,
             SkillpointHandler.RohaneSkill.DAMAGE_INCREASE.value,
             2,
         )
+        # Mipsy: 13 direct damage, 13 melee defense, 5 group haste
         self.skillpoint_handler.try_spend_multiple_skillpoints(
             SkillpointHandler.AllyType.MIPSY,
             SkillpointHandler.MipsySkill.GROUP_HASTE.value,
             2,
         )
+        # Talinia: 13 ranged attacks, 13 shockwave, 5 melee haste
         self.skillpoint_handler.try_spend_multiple_skillpoints(
             SkillpointHandler.AllyType.TALINIA,
             SkillpointHandler.TaliniaSkill.MELEE_HASTE.value,
@@ -559,16 +599,20 @@ class Autoplayer:
         )
         # Train for a bit to make sure we aren't underleveled because enemies can be quite dangerous
         self.grind_battles(150)
+
+        # Rohane: 13 stun, 13 haste, 7 damage
         self.skillpoint_handler.try_spend_multiple_skillpoints(
             SkillpointHandler.AllyType.ROHANE,
             SkillpointHandler.RohaneSkill.DAMAGE_INCREASE.value,
             2,
         )
+        # Mipsy: 13 direct damage, 13 melee defense, 7 group haste
         self.skillpoint_handler.try_spend_multiple_skillpoints(
             SkillpointHandler.AllyType.MIPSY,
             SkillpointHandler.MipsySkill.GROUP_HASTE.value,
             2,
         )
+        # Talinia: 13 ranged attacks, 13 shockwave, 7 melee haste,
         self.skillpoint_handler.try_spend_multiple_skillpoints(
             SkillpointHandler.AllyType.TALINIA,
             SkillpointHandler.TaliniaSkill.MELEE_HASTE.value,
@@ -595,21 +639,26 @@ class Autoplayer:
             "511111111155551111533588822228448222263336263622844444444711174777111111111177744222226333"
         )
         self.grind_battles(100)
+
+        # Rohane: 13 stun, 13 haste, 8 damage
         self.skillpoint_handler.try_spend_multiple_skillpoints(
             SkillpointHandler.AllyType.ROHANE,
             SkillpointHandler.RohaneSkill.DAMAGE_INCREASE.value,
-            2,
+            1,
         )
+        # Mipsy: 13 direct damage, 13 melee defense, 8 group haste
         self.skillpoint_handler.try_spend_multiple_skillpoints(
             SkillpointHandler.AllyType.MIPSY,
-            SkillpointHandler.MipsySkill.GROUP_HASTE.value,
-            2,
+            SkillpointHandler.MipsySkill.CASTING_HASTE.value,
+            1,
         )
+        # Talinia: 13 ranged attacks, 13 shockwave, 8 melee haste
         self.skillpoint_handler.try_spend_multiple_skillpoints(
             SkillpointHandler.AllyType.TALINIA,
             SkillpointHandler.TaliniaSkill.MELEE_HASTE.value,
-            2,
+            1,
         )
+
         self.follow_path(
             "3335111115626822222222663335551117477715553344444448666688882222228"
         )
@@ -621,19 +670,20 @@ class Autoplayer:
         self.follow_path("333555333333333")
         self.follow_path("11111111117747477111155115551711151144884")
 
+        # Velm: 13 single heal, 13 group shield, 8 haste
         self.npc_handler.recruit_velm()
         self.skillpoint_handler.try_spend_multiple_skillpoints(
-            SkillpointHandler.AllyType.VELM, SkillpointHandler.VelmSkill.HEAL.value, 12
+            SkillpointHandler.AllyType.VELM, SkillpointHandler.VelmSkill.HEAL.value, 13
         )
         self.skillpoint_handler.try_spend_multiple_skillpoints(
             SkillpointHandler.AllyType.VELM,
             SkillpointHandler.VelmSkill.GROUP_SHIELD.value,
-            15,
+            13,
         )
         self.skillpoint_handler.try_spend_multiple_skillpoints(
             SkillpointHandler.AllyType.VELM,
-            SkillpointHandler.VelmSkill.MELEE_DEFENSE.value,
-            12,
+            SkillpointHandler.VelmSkill.CASTING_HASTE.value,
+            8,
         )
 
         # Leave Waset Village
@@ -673,25 +723,29 @@ class Autoplayer:
         self.npc_handler.get_medallion()
         self.grind_battles(100, "333")
 
+        # Rohane: 13 stun, 13 haste, 9 damage
         self.skillpoint_handler.try_spend_multiple_skillpoints(
             SkillpointHandler.AllyType.ROHANE,
             SkillpointHandler.RohaneSkill.DAMAGE_INCREASE.value,
-            3,
+            1,
         )
+        # Mipsy: 13 direct damage, 13 melee defense, 9 group haste
         self.skillpoint_handler.try_spend_multiple_skillpoints(
             SkillpointHandler.AllyType.MIPSY,
-            SkillpointHandler.MipsySkill.CASTING_HASTE.value,
-            3,
+            SkillpointHandler.MipsySkill.GROUP_HASTE.value,
+            1,
         )
+        # Talinia: 13 ranged attacks, 13 shockwave, 9 melee haste
         self.skillpoint_handler.try_spend_multiple_skillpoints(
             SkillpointHandler.AllyType.TALINIA,
-            SkillpointHandler.TaliniaSkill.MAGIC_RESIST.value,
-            3,
+            SkillpointHandler.TaliniaSkill.MELEE_HASTE.value,
+            1,
         )
+        # Velm: 13 single heal, 13 group shield, 9 haste
         self.skillpoint_handler.try_spend_multiple_skillpoints(
             SkillpointHandler.AllyType.VELM,
             SkillpointHandler.VelmSkill.CASTING_HASTE.value,
-            3,
+            1,
         )
 
         self.follow_path(
@@ -720,21 +774,25 @@ class Autoplayer:
         )
         self.grind_battles(100)
 
+        # Rohane: 13 stun, 13 haste, 11 damage
         self.skillpoint_handler.try_spend_multiple_skillpoints(
             SkillpointHandler.AllyType.ROHANE,
             SkillpointHandler.RohaneSkill.DAMAGE_INCREASE.value,
             2,
         )
+        # Mipsy: 13 direct damage, 13 melee defense, 11 group haste
         self.skillpoint_handler.try_spend_multiple_skillpoints(
             SkillpointHandler.AllyType.MIPSY,
             SkillpointHandler.MipsySkill.GROUP_HASTE.value,
             2,
         )
+        # Talinia: 13 ranged attacks, 13 shockwave, 11 melee haste
         self.skillpoint_handler.try_spend_multiple_skillpoints(
             SkillpointHandler.AllyType.TALINIA,
-            SkillpointHandler.TaliniaSkill.MAGIC_RESIST.value,
+            SkillpointHandler.TaliniaSkill.MELEE_HASTE.value,
             2,
         )
+        # Velm: 13 single heal, 13 group shield, 11 haste
         self.skillpoint_handler.try_spend_multiple_skillpoints(
             SkillpointHandler.AllyType.VELM,
             SkillpointHandler.VelmSkill.CASTING_HASTE.value,
@@ -756,10 +814,20 @@ class Autoplayer:
         self.follow_path("2628822222222822888844444477774777111111555111")
         self.follow_path("1111111111444444444444444444488222488844444444444711535533336251533363335111174448444")
         self.grind_battles(100)
-        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.ROHANE, SkillpointHandler.RohaneSkill.CRIT.value, 2)
-        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.MIPSY, SkillpointHandler.MipsySkill.GROUP_HASTE.value, 2)
-        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.TALINIA, SkillpointHandler.TaliniaSkill.MAGIC_RESIST.value, 2)
-        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.VELM, SkillpointHandler.VelmSkill.CASTING_HASTE.value, 2)
+
+        # Rohane: 13 stun, 13 haste, 13 damage
+        self.skillpoint_handler.try_spend_multiple_skillpoints(
+            SkillpointHandler.AllyType.ROHANE, SkillpointHandler.RohaneSkill.DAMAGE_INCREASE.value, 2)
+        # Mipsy: 13 direct damage, 13 melee defense, 13 group haste
+        self.skillpoint_handler.try_spend_multiple_skillpoints(
+            SkillpointHandler.AllyType.MIPSY, SkillpointHandler.MipsySkill.CASTING_HASTE.value, 2)
+        # Talinia: 13 ranged attacks, 13 shockwave, 13 melee haste
+        self.skillpoint_handler.try_spend_multiple_skillpoints(
+            SkillpointHandler.AllyType.TALINIA, SkillpointHandler.TaliniaSkill.MELEE_HASTE.value, 2)
+        # Velm: 13 single heal, 13 group shield, 13 haste
+        self.skillpoint_handler.try_spend_multiple_skillpoints(
+            SkillpointHandler.AllyType.VELM, SkillpointHandler.VelmSkill.CASTING_HASTE.value, 2)
+
         # I think this actually fights Meuka for you lol
         self.follow_path("448444888771115333311333")
         # Walk to Von Roo for next script start location
@@ -771,10 +839,20 @@ class Autoplayer:
         # Grind in the middle
         self.follow_path("4444448888888884444477777777488888822222228828222822626663363335355177474711533633333333333")
         self.grind_battles(100)
-        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.ROHANE, SkillpointHandler.RohaneSkill.MAGIC_RESIST.value, 2)
-        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.MIPSY, SkillpointHandler.MipsySkill.GROUP_HASTE.value, 2)
-        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.TALINIA, SkillpointHandler.TaliniaSkill.MAGIC_RESIST.value, 2)
-        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.VELM, SkillpointHandler.VelmSkill.CASTING_HASTE.value, 2)
+
+        # Rohane: 13 stun, 13 haste, 13 damage, 2 crit
+        self.skillpoint_handler.try_spend_multiple_skillpoints(
+            SkillpointHandler.AllyType.ROHANE, SkillpointHandler.RohaneSkill.CRIT.value, 2)
+        # Mipsy: 13 direct damage, 13 melee defense, 13 group haste, 2 haste
+        self.skillpoint_handler.try_spend_multiple_skillpoints(
+            SkillpointHandler.AllyType.MIPSY, SkillpointHandler.MipsySkill.CASTING_HASTE.value, 2)
+        # Talinia: 13 ranged attacks, 13 shockwave, 13 melee haste, 2 damage
+        self.skillpoint_handler.try_spend_multiple_skillpoints(
+            SkillpointHandler.AllyType.TALINIA, SkillpointHandler.TaliniaSkill.INCREASE_BOW_DAMAGE.value, 2)
+        # Velm: 13 single heal, 13 group shield, 13 haste, 2 defense
+        self.skillpoint_handler.try_spend_multiple_skillpoints(
+            SkillpointHandler.AllyType.VELM, SkillpointHandler.VelmSkill.MELEE_DEFENSE.value, 2)
+
         self.follow_path("3333333333333333333388888888844444488844444882")
         # Beat Spider Grundo and then walk up to him again
         self.follow_path("22")
@@ -785,11 +863,22 @@ class Autoplayer:
         # Walk through the fun house and grind a lot to prep for faeries
         self.follow_path("5171111111111177747533")
         self.grind_battles(200)
-        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.ROHANE, SkillpointHandler.RohaneSkill.MAGIC_RESIST.value, 3)
-        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.MIPSY, SkillpointHandler.MipsySkill.MELEE_DEFENSE.value, 3)
-        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.TALINIA, SkillpointHandler.TaliniaSkill.INCREASE_BOW_DAMAGE.value, 3)
-        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.VELM, SkillpointHandler.VelmSkill.CASTING_HASTE.value, 3)
-        self.follow_path("336633555117884444447777753366333553336222284862662844444717488847115117111111533663336263511174444411111")
+
+        # Rohane: 13 stun, 13 haste, 13 damage, 4 crit
+        self.skillpoint_handler.try_spend_multiple_skillpoints(
+            SkillpointHandler.AllyType.ROHANE, SkillpointHandler.RohaneSkill.CRIT.value, 2)
+        # Mipsy: 13 direct damage, 13 melee defense, 13 group haste, 4 haste
+        self.skillpoint_handler.try_spend_multiple_skillpoints(
+            SkillpointHandler.AllyType.MIPSY, SkillpointHandler.MipsySkill.CASTING_HASTE.value, 2)
+        # Talinia: 13 ranged attacks, 13 shockwave, 13 melee haste, 4 damage
+        self.skillpoint_handler.try_spend_multiple_skillpoints(
+            SkillpointHandler.AllyType.TALINIA, SkillpointHandler.TaliniaSkill.INCREASE_BOW_DAMAGE.value, 2)
+        # Velm: 13 single heal, 13 group shield, 13 haste, 4 defense
+        self.skillpoint_handler.try_spend_multiple_skillpoints(
+            SkillpointHandler.AllyType.VELM, SkillpointHandler.VelmSkill.MELEE_DEFENSE.value, 2)
+
+        self.follow_path(
+            "336633555117884444447777753366333553336222284862662844444717488847115117111111533663336263511174444411111")
         # NEED TO TALK TO THE BRAIN TREE!!!
         self.npc_handler.talk_with_brain_tree()
         # Now buy from Auger
@@ -805,11 +894,22 @@ class Autoplayer:
         # Enter and grind in the middle
         self.follow_path("111533351111784556222222228745562265111174475574444")
         self.grind_battles(60)
-        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.ROHANE, SkillpointHandler.RohaneSkill.CRIT.value, 1)
-        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.MIPSY, SkillpointHandler.MipsySkill.CASTING_HASTE.value, 1)
-        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.TALINIA, SkillpointHandler.TaliniaSkill.MAGIC_RESIST.value, 1)
-        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.VELM, SkillpointHandler.VelmSkill.CASTING_HASTE.value, 1)
-        self.follow_path("4442226336663366447557753351114482222633628444444777115512263622226555111717748888226715333335")
+
+        # Rohane: 13 stun, 13 haste, 13 damage, 5 crit
+        self.skillpoint_handler.try_spend_multiple_skillpoints(
+            SkillpointHandler.AllyType.ROHANE, SkillpointHandler.RohaneSkill.CRIT.value, 1)
+        # Mipsy: 13 direct damage, 13 melee defense, 13 group haste, 5 haste
+        self.skillpoint_handler.try_spend_multiple_skillpoints(
+            SkillpointHandler.AllyType.MIPSY, SkillpointHandler.MipsySkill.CASTING_HASTE.value, 1)
+        # Talinia: 13 ranged attacks, 13 shockwave, 13 melee haste, 5 damage
+        self.skillpoint_handler.try_spend_multiple_skillpoints(
+            SkillpointHandler.AllyType.TALINIA, SkillpointHandler.TaliniaSkill.INCREASE_BOW_DAMAGE.value, 1)
+        # Velm: 13 single heal, 13 group shield, 13 haste, 5 defense
+        self.skillpoint_handler.try_spend_multiple_skillpoints(
+            SkillpointHandler.AllyType.VELM, SkillpointHandler.VelmSkill.MELEE_DEFENSE.value, 1)
+
+        self.follow_path(
+            "4442226336663366447557753351114482222633628444444777115512263622226555111717748888226715333335")
 
         # Now fight Hubrid Nox
         # Ends in position that we need for next script
@@ -829,20 +929,45 @@ class Autoplayer:
         # Start off where we beat Fallen Angel
         self.follow_path("4444884888222668282622288882282222286633")
         self.grind_battles(100)
-        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.ROHANE, SkillpointHandler.RohaneSkill.CRIT.value, 3)
-        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.MIPSY, SkillpointHandler.MipsySkill.CASTING_HASTE.value, 3)
-        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.TALINIA, SkillpointHandler.TaliniaSkill.INCREASE_BOW_DAMAGE.value, 3)
-        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.VELM, SkillpointHandler.VelmSkill.MELEE_DEFENSE.value, 3)
+
+        # Rohane: 13 stun, 13 haste, 13 damage, 7 crit
+        self.skillpoint_handler.try_spend_multiple_skillpoints(
+            SkillpointHandler.AllyType.ROHANE, SkillpointHandler.RohaneSkill.CRIT.value, 3)
+        # Mipsy: 13 direct damage, 13 melee defense, 13 group haste, 7 haste
+        self.skillpoint_handler.try_spend_multiple_skillpoints(
+            SkillpointHandler.AllyType.MIPSY, SkillpointHandler.MipsySkill.CASTING_HASTE.value, 3)
+        # Talinia: 13 ranged attacks, 13 shockwave, 13 melee haste, 7 damage
+        self.skillpoint_handler.try_spend_multiple_skillpoints(
+            SkillpointHandler.AllyType.TALINIA, SkillpointHandler.TaliniaSkill.INCREASE_BOW_DAMAGE.value, 3)
+        # Velm: 13 single heal, 13 group shield, 13 haste, 7 defense
+        self.skillpoint_handler.try_spend_multiple_skillpoints(
+            SkillpointHandler.AllyType.VELM, SkillpointHandler.VelmSkill.MELEE_DEFENSE.value, 3)
+
         self.follow_path("33662222228882662226222844444474884447774482274777444488884")
 
     def complete_act5_devilpuss(self) -> None:
         self.follow_path("48888444471117711747153333333335111111111174444444444444444444444444444822266222226333")
         self.grind_battles(80)
-        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.ROHANE, SkillpointHandler.RohaneSkill.MAGIC_RESIST.value, 2)
-        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.MIPSY, SkillpointHandler.MipsySkill.CASTING_HASTE.value, 2)
-        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.TALINIA, SkillpointHandler.TaliniaSkill.INCREASE_BOW_DAMAGE.value, 2)
-        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.VELM, SkillpointHandler.VelmSkill.CASTING_HASTE.value, 2)
-        self.follow_path("3336622226636362222663333622288444482222844444444444444444444444447111111115333351111111774444")
+        # Rohane: 13 stun, 13 haste, 13 damage, 10 crit
+        self.skillpoint_handler.try_spend_multiple_skillpoints(
+            SkillpointHandler.AllyType.ROHANE,
+            SkillpointHandler.RohaneSkill.CRIT.value, 3)
+        # Mipsy: 13 direct damage, 13 melee defense, 13 group haste, 10 haste
+        self.skillpoint_handler.try_spend_multiple_skillpoints(
+            SkillpointHandler.AllyType.MIPSY,
+            SkillpointHandler.MipsySkill.CASTING_HASTE.value, 3)
+        # Talinia: 13 ranged attacks, 13 shockwave, 13 melee haste, 10 damage
+        self.skillpoint_handler.try_spend_multiple_skillpoints(
+            SkillpointHandler.AllyType.TALINIA,
+            SkillpointHandler.TaliniaSkill.INCREASE_BOW_DAMAGE.value,
+            3)
+        # Velm: 13 single heal, 13 group shield, 13 haste, 10 defense
+        self.skillpoint_handler.try_spend_multiple_skillpoints(
+            SkillpointHandler.AllyType.VELM,
+            SkillpointHandler.VelmSkill.MELEE_DEFENSE.value, 3)
+
+        self.follow_path(
+            "3336622226636362222663333622288444482222844444444444444444444444447111111115333351111111774444")
         self.follow_path("4")
 
     def complete_act5_faerie_thief(self) -> None:
@@ -863,30 +988,64 @@ class Autoplayer:
         self.follow_path("4477115555717177111151511117744488848884844747777771111111")
         self.npc_handler.talk_with_lusina()
         self.follow_path("711777774444447117444771111551111174482536263362228888866636224444")
-        self.grind_battles(60)
-        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.ROHANE, SkillpointHandler.RohaneSkill.MAGIC_RESIST.value, 2)
-        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.MIPSY, SkillpointHandler.MipsySkill.MELEE_DEFENSE.value, 2)
-        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.TALINIA, SkillpointHandler.TaliniaSkill.INCREASE_BOW_DAMAGE.value, 2)
-        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.VELM, SkillpointHandler.VelmSkill.CELESTIAL_HAMMER.value, 2)
+        self.grind_battles(80)
+
+        # Rohane: 13 stun, 13 haste, 13 damage, 12 crit
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.ROHANE,
+                                                               SkillpointHandler.RohaneSkill.CRIT.value, 2)
+        # Mipsy: 13 direct damage, 13 melee defense, 13 group haste, 12 haste
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.MIPSY,
+                                                               SkillpointHandler.MipsySkill.CASTING_HASTE.value, 2)
+        # Talinia: 13 ranged attacks, 13 shockwave, 13 melee haste, 12 damage
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.TALINIA,
+                                                               SkillpointHandler.TaliniaSkill.INCREASE_BOW_DAMAGE.value,
+                                                               2)
+        # Velm: 13 single heal, 13 group shield, 13 haste, 12 defense
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.VELM,
+                                                               SkillpointHandler.VelmSkill.MELEE_DEFENSE.value, 2)
         self.follow_path("4448226333333333353")
 
         # Walk one step to fight Faerie Thief first encounter
         self.follow_path("3")
         self.follow_path("44844444444447115515357755555111744717484533622222882222223333362263333366633622263333333333")
         self.grind_battles(60)
-        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.ROHANE, SkillpointHandler.RohaneSkill.MAGIC_RESIST.value, 1)
-        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.MIPSY, SkillpointHandler.MipsySkill.MELEE_DEFENSE.value, 1)
-        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.TALINIA, SkillpointHandler.TaliniaSkill.INCREASE_BOW_DAMAGE.value, 1)
-        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.VELM, SkillpointHandler.VelmSkill.CELESTIAL_HAMMER.value, 1)
+
+        # Rohane: 13 stun, 13 haste, 13 damage, 13 crit
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.ROHANE,
+                                                               SkillpointHandler.RohaneSkill.CRIT.value, 1)
+        # Mipsy: 13 direct damage, 13 melee defense, 13 group haste, 13 haste
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.MIPSY,
+                                                               SkillpointHandler.MipsySkill.CASTING_HASTE.value, 1)
+        # Talinia: 13 ranged attacks, 13 shockwave, 13 melee haste, 13 damage
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.TALINIA,
+                                                               SkillpointHandler.TaliniaSkill.INCREASE_BOW_DAMAGE.value,
+                                                               1)
+        # Velm: 13 single heal, 13 group shield, 13 haste, 13 defense
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.VELM,
+                                                               SkillpointHandler.VelmSkill.MELEE_DEFENSE.value, 1)
         self.follow_path("333333351115555117111744777111777748448222222447482666333362222217482222")
         self.follow_path("6")
 
         self.follow_path("7111153622111174444777156335711153356336622226663362262228888228444444444")
         self.grind_battles(80)
-        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.ROHANE, SkillpointHandler.RohaneSkill.DAMAGE_INCREASE.value, 1)
-        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.MIPSY, SkillpointHandler.MipsySkill.GROUP_HASTE.value, 1)
-        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.TALINIA, SkillpointHandler.TaliniaSkill.INCREASE_BOW_DAMAGE.value, 1)
-        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.VELM, SkillpointHandler.VelmSkill.CELESTIAL_HAMMER.value, 1)
+
+        # Use up all our remaining skill points here
+
+        # Rohane: 13 stun, 13 haste, 13 damage, 13 crit, 7 magic resist
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.ROHANE,
+                                                               SkillpointHandler.RohaneSkill.MAGIC_RESIST.value, 7)
+
+        # Mipsy: 13 direct damage, 13 melee defense, 13 group haste, 13 haste, 7 damage shields
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.MIPSY,
+                                                               SkillpointHandler.MipsySkill.DAMAGE_SHIELDS.value, 7)
+
+        # Talinia: 13 ranged attacks, 13 shockwave, 13 melee haste, 13 damage, 7 magic resist
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.TALINIA,
+                                                               SkillpointHandler.TaliniaSkill.MAGIC_RESIST.value,
+                                                               7)
+        # Velm: 13 single heal, 13 group shield, 13 haste, 13 defense, 7 celestial hammer
+        self.skillpoint_handler.try_spend_multiple_skillpoints(SkillpointHandler.AllyType.VELM,
+                                                               SkillpointHandler.VelmSkill.CELESTIAL_HAMMER.value, 7)
         self.follow_path("4444444851111111111535111111111111111111151171111177771")
 
         # Finally, fight the Faerie Thief last time
@@ -895,22 +1054,27 @@ class Autoplayer:
 
     def complete_act5_finale(self) -> None:
         self.npc_handler.talk_with_stenvela()
-        self.follow_path("44444447111177774471557444828711111533335555335111744444444447111111111153333333362222226333622222636636266263533368222284482222222"
-                         "63366333333335551111111111744784471111533351774877111555336665111111782877711174444447448444488211")
+        self.follow_path(
+            "44444447111177774471557444828711111533335555335111744444444447111111111153333333362222226333622222636636266263533368222284482222222"
+            "63366333333335551111111111744784471111533351774877111555336665111111782877711174444447448444488211")
         self.npc_handler.talk_with_vitrini()
         # Go to right pant devil
-        self.follow_path("44444448882228444475335744444471115626335156222265351533688634477166632755744828487111178284471782226333333684486333355511153333333")
+        self.follow_path(
+            "44444448882228444475335744444471115626335156222265351533688634477166632755744828487111178284471782226333333684486333355511153333333")
         # Go to left pant devil
-        self.follow_path("333333333333666222633335744753333335111782844717822447174482266284335518884251771153362633315626335156222844444486336844447111777444444444444")
+        self.follow_path(
+            "333333333333666222633335744753333335111782844717822447174482266284335518884251771153362633315626335156222844444486336844447111777444444444444")
         # IMPORTANT: must assemble key!
         self.npc_handler.talk_with_vitrini_key()
-        self.follow_path("44444448882228884444822222222226663333333333622222222228717444444444486334822636217884751533511533688226336211147")
+        self.follow_path(
+            "44444448882228884444822222222226663333333333622222222228717444444444486334822636217884751533511533688226336211147")
         self.follow_path("11")
         # Centre between pillars
         self.follow_path("4")
         # Now walk all the way over
-        self.follow_path("1111111111111111117744444444447771111111111533335551115553333333333333333333666222666333362222222222888444444444482"
-                         "222222222263515711571533362222666226535511111111144863622284444822228444444451111111551533622222222263336")
+        self.follow_path(
+            "1111111111111111117744444444447771111111111533335551115553333333333333333333666222666333362222222222888444444444482"
+            "222222222263515711571533362222666226535511111111144863622284444822228444444451111111551533622222222263336")
         # Rest with Lyra - no need to buy potions since we are maxed from before
         self.npc_handler.talk_with_lyra()
         self.follow_path("511111111111528888888")

@@ -1,11 +1,10 @@
-from enum import Enum, auto
 import logging
+from enum import Enum, auto
 
-from Pages.neopets_page import NeopetsPage
+from src.Pages.neopets_page import NeopetsPage
 
 logger = logging.getLogger(__name__)
 
-from Pages.overworld_page import OverworldPage
 
 class SkillpointHandler:
     class AllyType(Enum):
@@ -62,7 +61,7 @@ class SkillpointHandler:
     VELM_SKILLPOINT_SPEND_TEMPLATE = r"https://www.neopets.com/games/nq2/nq2.phtml?act=skills&buy_char=4&buy_char=4&confirm=1&skopt_{0}=1"
 
     def __init__(self, overworld_page: NeopetsPage) -> None:
-        logger.info("Skillpoint handler oh yeahhh")
+        logger.info("Initializing skillpoint handler with current page for later use...")
         self.overworld_page = overworld_page
 
     def try_spend_skillpoint(self, ally: AllyType, skill_id: int) -> bool:

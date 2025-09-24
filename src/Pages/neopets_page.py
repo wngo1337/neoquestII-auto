@@ -1,8 +1,8 @@
 from __future__ import annotations
-from typing import Type
-from playwright.sync_api import Page, Locator
 
 import logging
+
+from playwright.sync_api import Page, Locator
 
 logger = logging.getLogger(__name__)
 
@@ -53,10 +53,10 @@ class NeopetsPage:
         matching_element.click()
 
     def click_clickable_element(
-        self,
-        button: Locator,
-        error_message: str,
-        max_retries: int = 5,
+            self,
+            button: Locator,
+            error_message: str,
+            max_retries: int = 5,
     ) -> None:
         """
         Click an element on the current page, retry clicking if it fails by reloading the page.

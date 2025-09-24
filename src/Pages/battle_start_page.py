@@ -4,7 +4,7 @@ from typing import List
 
 from playwright.sync_api import Page, Locator
 
-from .neopets_page import NeopetsPage
+from src.Pages.neopets_page import NeopetsPage
 
 import logging
 

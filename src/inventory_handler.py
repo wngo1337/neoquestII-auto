@@ -1,8 +1,8 @@
 import logging
 from enum import Enum
 
-from Pages.neopets_page import NeopetsPage
-from Pages.overworld_page import OverworldPage
+from src.Pages.neopets_page import NeopetsPage
+from src.Pages.overworld_page import OverworldPage
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +37,7 @@ class InventoryHandler:
     REINFORCED_LEATHER_TUNIC_ID = 20230
 
     def __init__(self, current_page: NeopetsPage) -> None:
-        logger.info("Initialized inventory handler!")
+        logger.info("Initializing inventory handler with current page for later use...")
         self.overworld_page = OverworldPage(current_page.page_instance)
         # We don't actually need to represent the inventory page. We will just visit the link and it takes us to a thing
         # Then we navigate back to the main game page
@@ -47,7 +47,7 @@ class InventoryHandler:
         self.overworld_page.go_to_url_and_wait_navigation(
             self.EQUIP_EQUIPMENT_URL_TEMPLATE.format(equipment_id, ally_id)
         )
-        logger.info("Navigating back to the overworld page...")
+        logger.info("Navigating back to the overworld page after equipping item...")
         self.overworld_page.go_to_url_and_wait_navigation(
             InventoryHandler.MAIN_GAME_URL
         )

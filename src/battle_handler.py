@@ -1,16 +1,12 @@
 import logging
 from enum import Enum
 
-from bs4 import BeautifulSoup
-from Pages.neopets_page import NeopetsPage
-from Pages.battle_page import BattlePage
-from Pages.battle_start_page import BattleStartPage
-from Pages.battle_result_page import BattleResultPage
-
-from potion_handler import PotionHandler
-from typing import Optional, Dict, List
-
+from src.Pages.battle_page import BattlePage
+from src.Pages.battle_result_page import BattleResultPage
+from src.Pages.battle_start_page import BattleStartPage
+from src.Pages.neopets_page import NeopetsPage
 from src.Pages.overworld_page import OverworldPage
+from src.potion_handler import PotionHandler
 from src.skillpoint_handler import SkillpointHandler
 
 logger = logging.getLogger(__name__)
@@ -77,7 +73,7 @@ class BattleHandler:
 
         else:
             logger.info(
-                "We are not any a battle page. Just initializing the battle handler..."
+                "We are not any a battle page. Initializing battle handler without setting pages..."
             )
             self.battle_start_page = None
             self.battle_page = None
@@ -122,8 +118,8 @@ class BattleHandler:
             )
             return True
         elif (
-            self.battle_page.page_instance.locator(BattlePage.END_FIGHT_LOCATOR).count()
-            > 0
+                self.battle_page.page_instance.locator(BattlePage.END_FIGHT_LOCATOR).count()
+                > 0
         ):
             logger.info("The battle is over! Passing off control to the next method...")
             return True
@@ -152,6 +148,7 @@ class BattleHandler:
                 )
                 self.battle_page = BattlePage(self.battle_start_page.page_instance)
             else:
+                # TODO: create and throw a custom exception for failed battle start
                 raise Exception(
                     "We tried to start the battle but it failed for some unknown reason. See the log files for more info"
                 )
@@ -209,6 +206,7 @@ class BattleHandler:
         #     # Perform any cleanup or next steps here
         #
         else:
+            # TODO: create and throw custom exception for unknown page encounter during battle
             raise Exception("The program ran into an unexpected page during battle")
 
     def handle_enemy_turn(self, enemy_id: int) -> BattlePage:
@@ -400,8 +398,8 @@ class BattleHandler:
 
         # Start of battle OR 3 turns have passed
         if (
-            self.mipsy_turns_elapsed_counter == -1
-            or self.mipsy_turns_elapsed_counter >= 4
+                self.mipsy_turns_elapsed_counter == -1
+                or self.mipsy_turns_elapsed_counter >= 4
         ):
             haste_spellcast_url = self.PLAYER_UNTARGETED_SPELLCAST_URL_TEMPLATE.format(
                 SkillpointHandler.MipsySkill.GROUP_HASTE.value,
@@ -515,8 +513,8 @@ class BattleHandler:
                 )
 
         if (
-            self.velm_turns_elapsed_counter == -1
-            or self.velm_turns_elapsed_counter >= 4
+                self.velm_turns_elapsed_counter == -1
+                or self.velm_turns_elapsed_counter >= 4
         ):
             shield_spellcast_url = self.PLAYER_UNTARGETED_SPELLCAST_URL_TEMPLATE.format(
                 SkillpointHandler.VelmSkill.GROUP_SHIELD.value,
@@ -554,9 +552,10 @@ class BattleHandler:
             elif lowest_hp_ratio == velm_hp_ratio:
                 actor_to_heal_id = BattleHandler.AllyId.VELM.value
             else:
-                logger.error("The HP ratio calculated did not match any ally actors!")
-                raise Exception(
-                    "HP ratio calculated did not match any ally actors! This breaks Velm's turn and must be fixed."
+                logger.error(f"The HP ratio calculated did not match any ally actors! The ratio is: {lowest_hp_ratio}")
+                # TODO: create and throw custom exception for HP that does not match any ally's HP
+                raise ValueError(
+                    "Expected an HP ratio that matches an ally actor's HP ratio. This breaks Velm's turn and must be fixed."
                 )
 
             single_heal_url = self.PLAYER_TARGETED_SPELLCAST_URL_TEMPLATE.format(
@@ -625,6 +624,7 @@ class BattleHandler:
             self.reset_battle_specific_counters()
         else:
             logger.error("Program tried to end the battle when the battle is not over!")
+            # TODO: create and throw custom exception for program ending battle when not over
             raise Exception(
                 "Program tried to end the battle when the battle is not over, so we are confused!"
             )

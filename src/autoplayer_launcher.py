@@ -1,20 +1,16 @@
 import logging
 import os
 import sys
-from unittest import case
 
 import click
-from autoplayer import Autoplayer
 from playwright.sync_api import sync_playwright, BrowserContext
 
-from Pages.neopets_page import NeopetsPage
+import src.logging_config
+from src.Pages.neopets_page import NeopetsPage
+from src.autoplayer import Autoplayer
 
-# from page_parser import PageParser
-
-import logging_config
-from overworld_handler import OverworldHandler
-from skillpoint_handler import SkillpointHandler
-
+# Hack to keep Pycharm from deleting my import...
+_ = src.logging_config
 logger = logging.getLogger(__name__)
 
 REQUIRED_DATA_DIR = "RequiredData"
@@ -213,6 +209,25 @@ class AutoplayerLauncher:
                             print(
                                 "You did not select a valid Act 5 option. Returning to main menu..."
                             )
+
+                case "6":
+                    movement_path = input("Enter the path that you would like to follow: ")
+                    if movement_path.isnumeric():
+                        self.autoplayer.follow_path(movement_path)
+                    else:
+                        print("You did not enter a valid movement path. Returning to main menu...")
+
+                case "7":
+                    num_steps = input("Enter the number of steps that you would like to train for: ")
+                    if num_steps.isnumeric():
+                        num_steps_val = int(num_steps)
+                        if int(num_steps_val) > 0 and int(num_steps_val) < 1000:
+                            self.autoplayer.grind_battles(num_steps_val)
+                        else:
+                            print(
+                                "That number of steps seems to large or too small. You would never need to train more than 1000 steps!")
+                    else:
+                        print("You did not enter a numeric value. Returning to main menu...")
 
 
 @click.command()

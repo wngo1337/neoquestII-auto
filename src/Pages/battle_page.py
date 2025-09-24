@@ -1,20 +1,17 @@
-from enum import Enum, auto
 import re
-from bs4 import BeautifulSoup, NavigableString
+from enum import Enum, auto
+from typing import Dict, List
 
+from bs4 import BeautifulSoup, NavigableString
 from playwright.sync_api import Page
 
-from src.Pages.battle_result_page import BattleResultPage
 from src.Pages.neopets_page import NeopetsPage
 from src.potion_handler import PotionHandler
-
-from typing import Dict, List
 
 
 class BattlePage(NeopetsPage):
     # NOTE: we will conduct battles by passing query string parameters
     # It is really difficult to create selectors for the elements that set a javascript call
-    # LOCATORS FOR ELEMENTS ON ENEMY TURN
 
     # If this is present, it is the enemy's turn
     # Likely the only selector even needed on enemy turn
@@ -101,6 +98,7 @@ class BattlePage(NeopetsPage):
         if hidden_input_tag:
             return int(hidden_input_tag["value"])
         else:
+            # TODO: create and throw custom exception when nxactor info is not available on expected battle page
             raise Exception("Could not find nxactor hidden input on the battle page.")
 
     def get_character_hp_vals(self) -> Dict[str, Dict[str, int]]:
@@ -171,10 +169,10 @@ class BattlePage(NeopetsPage):
                     )
 
                 if (
-                    character_name in BattlePage.ALLY_NAMES
-                    and character_name not in added_chars.keys()
+                        character_name in BattlePage.ALLY_NAMES
+                        and character_name not in added_chars.keys()
                 ):
-                    # print(
+                    # logger.info(
                     #     f"Adding entry to character list: {character_name} - {raw_hp_text}"
                     # )
                     hp_vals = raw_hp_text.split("/")
@@ -185,8 +183,8 @@ class BattlePage(NeopetsPage):
                         "max_hp": max_hp,
                     }
                     # break
-        print("These are the allies we see on the page:")
-        print(added_chars)
+        # logger.info("These are the allies we see on the page:")
+        # logger.info(added_chars)
 
         return added_chars
 
@@ -218,8 +216,8 @@ class BattlePage(NeopetsPage):
         """
         page_html = self.get_page_content()
         if (
-            BattlePage.ALREADY_DEFEATED_TARGET_TEXT in page_html
-            or BattlePage.INVALID_CASTING_TARGET_TEXT in page_html
+                BattlePage.ALREADY_DEFEATED_TARGET_TEXT in page_html
+                or BattlePage.INVALID_CASTING_TARGET_TEXT in page_html
         ):
             return True
         else:
@@ -232,9 +230,9 @@ class BattlePage(NeopetsPage):
         """
         page_html = self.get_page_content()
         if (
-            BattlePage.RAMTOR_FLEE_TEXT in page_html
-            or BattlePage.FAERIE_THIEF_FLEE1_TEXT in page_html
-            or BattlePage.FAERIE_THIEF_FLEE2_TEXT in page_html
+                BattlePage.RAMTOR_FLEE_TEXT in page_html
+                or BattlePage.FAERIE_THIEF_FLEE1_TEXT in page_html
+                or BattlePage.FAERIE_THIEF_FLEE2_TEXT in page_html
         ):
             return True
         return False

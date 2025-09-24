@@ -1,4 +1,4 @@
-from page_types import PageType
+from src.page_types import PageType
 from bs4 import BeautifulSoup
 
 

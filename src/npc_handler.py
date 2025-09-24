@@ -1,8 +1,8 @@
-from typing import List
-from Pages.neopets_page import NeopetsPage
-from src.Pages.overworld_page import OverworldPage
-from src.Pages.battle_start_page import BattleStartPage
 import logging
+from typing import List
+
+from src.Pages.neopets_page import NeopetsPage
+from src.Pages.overworld_page import OverworldPage
 
 logger = logging.getLogger(__name__)
 
@@ -195,7 +195,7 @@ class NpcHandler:
     ]
 
     def __init__(self, current_page: NeopetsPage) -> OverworldPage:
-        logger.info("NPC Handler initialized")
+        logger.info("Initialized NPC handler with current page, which should update dynamically...")
         self.npc_page = OverworldPage(current_page.page_instance)
 
     def set_npc_page(self, npc_page: NeopetsPage) -> None:

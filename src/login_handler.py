@@ -1,16 +1,9 @@
+import logging
 import os.path
 
-from playwright.sync_api import Page
-from Pages.neopets_page import NeopetsPage
-
-from page_parser import PageParser
-from typing import Union
-from page_types import PageType
-
-import logging
+from src.Pages.neopets_page import NeopetsPage
 
 logger = logging.getLogger(__name__)
-
 
 # This class is not part of the game, so it does not warrant page objects for login pages
 
@@ -22,6 +15,7 @@ base_dir = os.path.dirname(os.path.abspath(__file__))
 
 user_info_file_path = os.path.join(base_dir, os.path.pardir, REQUIRED_DATA_DIR, TEXT_FILES_DIR, USER_INFO_FILE)
 logger.info(f"The full path to user_info file is: {user_info_file_path}")
+
 
 class LoginHandler:
     NEOPASS_LOGIN_URL: str = "https://neopass.neopets.com/login"
@@ -53,8 +47,8 @@ class LoginHandler:
         self.neopets_page = neopets_page
 
         with open(
-            user_info_file_path,
-            "r",
+                user_info_file_path,
+                "r",
         ) as f:
             if self.use_neopass:
                 self.neopass_email = f.readline().strip()
@@ -137,7 +131,7 @@ class LoginHandler:
             self.NEOPASS_CONTINUE_BUTTON_LOCATOR
         )
         with account_selection_tab.expect_navigation(
-            wait_until="domcontentloaded", timeout=30000
+                wait_until="domcontentloaded", timeout=30000
         ):
             continue_button.click()
 
@@ -168,7 +162,7 @@ class LoginHandler:
             self.TRADITIONAL_SIGN_IN_LOCATOR
         )
         with self.neopets_page.page_instance.expect_navigation(
-            wait_until="domcontentloaded", timeout=30000
+                wait_until="domcontentloaded", timeout=30000
         ):
             sign_in_button.click()
         logger.info(

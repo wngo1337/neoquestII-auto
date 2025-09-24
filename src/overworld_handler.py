@@ -1,13 +1,10 @@
-from enum import Enum, StrEnum, auto
+import logging
+from enum import Enum
 from typing import List
 
-from Pages.neopets_page import NeopetsPage
-
-import logging
-
-from Pages.overworld_page import OverworldPage
-from src.Pages.battle_page import BattlePage
 from src.Pages.battle_start_page import BattleStartPage
+from src.Pages.neopets_page import NeopetsPage
+from src.Pages.overworld_page import OverworldPage
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +40,7 @@ class OverworldHandler:
         HUNTING = 2
 
     def __init__(self, current_page: NeopetsPage) -> None:
-        logger.info("Yeah baby, an overworld handler")
+        logger.info("Initialized overworld handler with current page...")
         self.overworld_page = OverworldPage(current_page.page_instance)
 
     def is_overworld(self) -> bool:
@@ -52,6 +49,7 @@ class OverworldHandler:
         """
         return self.overworld_page.nav_map.count() > 0
 
+    # TODO: probably put this in a constant
     def is_battle_start(self) -> bool:
         """Used to determine if the result of a movement action was a random encounter."""
         return "You are attacked by" in self.overworld_page.get_page_content()
@@ -73,7 +71,7 @@ class OverworldHandler:
             return BattleStartPage(self.overworld_page.page_instance)
 
     @staticmethod
-    def invert_path(self, map_path: str) -> str:
+    def invert_path(map_path: str) -> str:
         """
         Takes a path of directions and returns a string that theoretically returns the user to their starting location.
 
