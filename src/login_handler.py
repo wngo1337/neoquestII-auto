@@ -54,6 +54,7 @@ class LoginHandler:
                 "r",
         ) as f:
             line_count = sum(1 for line in f)
+            f.seek(0)
             if self.use_neopass:
                 if line_count != 3:
                     raise ValueError(
