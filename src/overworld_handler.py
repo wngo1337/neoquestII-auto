@@ -111,12 +111,6 @@ class OverworldHandler:
                 OverworldPage.SWITCH_HUNTING_MODE_URL
             )
 
-    # def open_inventory(self) -> None:
-    #     self.overworld_page.click_inventory_button()
-
-    # def open_options(self) -> None:
-    #     self.overworld_page.click_options_button()
-
     def get_overworld_map_coordinates(self) -> List[str]:
         """
         Get a list of the coordinates on the overworld map. Mainly used to determine if an action went through on page

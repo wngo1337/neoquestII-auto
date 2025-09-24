@@ -8,6 +8,8 @@ logger = logging.getLogger(__name__)
 
 
 class NeopetsPage:
+    MAIN_GAME_URL = r"https://www.neopets.com/games/nq2/nq2.phtml"
+
     def __init__(self, neopets_page_instance: Page) -> None:
         # The playwright Page object tracks a tab and the pages that it visits
         # This means we don't have to worry about stale references like in Selenium

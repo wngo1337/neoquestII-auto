@@ -1,13 +1,14 @@
 import logging
 from enum import Enum
 
+from src.AutoplayerBaseHandler import AutoplayerBaseHandler
 from src.Pages.neopets_page import NeopetsPage
 from src.Pages.overworld_page import OverworldPage
 
 logger = logging.getLogger(__name__)
 
 
-class InventoryHandler:
+class InventoryHandler(AutoplayerBaseHandler):
     class AllyId(Enum):
         ROHANE = 1
         MIPSY = 2
@@ -15,7 +16,6 @@ class InventoryHandler:
         VELM = 4
 
     EQUIP_EQUIPMENT_URL_TEMPLATE = "https://www.neopets.com/games/nq2/nq2.phtml?act=inv&iact=equip&targ_item={0}&targ_char={1}"
-    MAIN_GAME_URL = "https://www.neopets.com/games/nq2/nq2.phtml"
 
     # ROHANE EQUIPMENT
     IRON_SHORTSWORD_ID = 10011

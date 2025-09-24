@@ -1,6 +1,7 @@
 import logging
 from enum import Enum
 
+from src.AutoplayerBaseHandler import AutoplayerBaseHandler
 from src.Pages.battle_page import BattlePage
 from src.Pages.battle_result_page import BattleResultPage
 from src.Pages.battle_start_page import BattleStartPage
@@ -26,7 +27,7 @@ def does_need_healing(current_hp: int, max_hp: int) -> bool:
     return current_hp / max_hp < 0.55
 
 
-class BattleHandler:
+class BattleHandler(AutoplayerBaseHandler):
     ROHANE_TURN_IDENTIFIER = r"<b>Rohane</b>"
     MIPSY_TURN_IDENTIFIER = r"<b>Mipsy</b>"
     TALINIA_TURN_IDENTIFIER = r"<b>Talinia</b>"
@@ -162,9 +163,7 @@ class BattleHandler:
             logger.info("Battle is not over yet!")
             self.advance_battle()
         # When battle is finished, reset current target to initial value for next fight
-        # KIND OF MESSY BECAUSE THIS IS STATEFUL WHILE BATTLE LOSE STATE AFTER ENDING
         # TODO: figure out better way to handle resetting the target
-        # self.current_target = BattleHandler.INITIAL_ENEMY_ID
         self.reset_battle_specific_counters()
 
     def advance_battle(self) -> BattlePage:
@@ -196,15 +195,6 @@ class BattleHandler:
                 case _:
                     self.handle_enemy_turn(actor_id)
             return self.battle_page
-        # elif turn_type == BattlePage.TurnType.ENEMY:
-        #     # Enemy's actor id should be available, assuming method exists:
-        #     enemy_id = self.battle_page.get_next_actor_id()
-        #     self.handle_enemy_turn(enemy_id)
-        #
-        # elif turn_type == BattlePage.TurnType.BATTLE_OVER:
-        #     logger.info("Battle is complete!")
-        #     # Perform any cleanup or next steps here
-        #
         else:
             # TODO: create and throw custom exception for unknown page encounter during battle
             raise Exception("The program ran into an unexpected page during battle")
@@ -221,31 +211,6 @@ class BattleHandler:
             BattleHandler.ENEMY_TURN_URL_TEMPLATE.format(enemy_id)
         )
 
-        return self.battle_page
-
-    def handle_ally_turn(self, ally_id: int) -> BattlePage:
-        """
-        Take action based on the ally actor id that is passed in.
-        Action priority differs by character, but in general: potion heal? -> castable skill? -> basic attack?
-
-        We have not figured out how haste or damage potions fit in yet
-        """
-        match ally_id:
-            case 1:
-                # Rohane turn
-                pass
-            case 2:
-                # Mipsy turn
-                pass
-            case 3:
-                # Talinia turn
-                pass
-            case 4:
-                # Velm turn
-                pass
-            case _:
-                # Error because we expected an ally's ID
-                raise ValueError(f"Expected an ally ID between 1-4. Got: {ally_id}")
         return self.battle_page
 
     def get_best_available_potion_id(self, current_hp: int, max_hp: int) -> int:
@@ -271,17 +236,12 @@ class BattleHandler:
         if best_potion_id == -1:
             logger.warning("The player is out of potions! This is extremely dangerous.")
             # Note: we considered throwing an error here, but it is a common scenario in early levels
-            # raise ValueError(f"Expected a valid potion ID but got: {best_potion_id}."
-            #                  f"This likely happened because you are out of potions!")
-
         return best_potion_id
 
     def handle_rohane_turn(self) -> BattlePage:
         # Check if we need potion heal
         # Otherwise, just basic attack
-        # Melee haste + crit is the standard build
 
-        # WE CAN'T MOVE FORWARD UNTIL WE FIND A WAY TO EXTRACT THE HP VALUES!!!
         hp_vals = self.battle_page.get_character_hp_vals()["Rohane"]
         rohane_current_hp = hp_vals["current_hp"]
         rohane_max_hp = hp_vals["max_hp"]
@@ -291,10 +251,6 @@ class BattleHandler:
                 rohane_current_hp, rohane_max_hp
             )
 
-            # healing_url = BattleHandler.PLAYER_TURN_URL_TEMPLATE.format(
-            #     -1, 5, "", best_potion_id, BattleHandler.AllyId.ROHANE.value
-            # )
-            # We have an available potion to use
             if best_potion_id != -1:
                 healing_url = BattleHandler.PLAYER_HEAL_URL_TEMPLATE.format(
                     best_potion_id, BattleHandler.AllyId.ROHANE.value
@@ -306,45 +262,6 @@ class BattleHandler:
                 logger.warning(
                     "Rohane needs to heal but we do not have any potions! Basic attacking and seeing what happens..."
                 )
-        #     #     """
-        #     #     Target = -1
-        #     #     fact = 5
-        #     #     parm =
-        #     #     use_id = WHATEVER POTION IS
-        #     #     nxactor = ACTOR ID!!!
-        #     #     """
-        #     ranked_potions = PotionHandler.get_best_potions_by_efficiency(
-        #         hp_vals["current_hp"], hp_vals["max_hp"]
-        #     )
-
-        # available_potions = self.battle_page.get_available_healing_potions()
-        # available_potions_lowercase = [
-        #     potion_name.lower() for potion_name in available_potions
-        # ]
-        #
-        # best_potion_id = -1
-        # for potion_id, potion_name in ranked_potions:
-        #     if potion_name.lower() in available_potions_lowercase:
-        #         best_potion_id = potion_id
-        #         break
-        # # WE SHOULD PROBABLY STOP ATTACKING AND GO HEAL HERE, BUT TELL IT TO CONTINUE FIGHTING
-        # if best_potion_id == -1:
-        #     logger.warning("The player is out of potions! This is extremely dangerous.")
-
-        # attack_url = BattleHandler.PLAYER_ATTACK_URL_TEMPLATE.format(
-        #     self.current_target, BattleHandler.AllyId.ROHANE.value
-        # )
-        # logger.info(f"We would go to the attack url: {attack_url}")
-        # self.battle_page.go_to_url_and_wait_navigation(attack_url)
-        # while self.battle_page.has_attacked_invalid_target():
-        #     self.current_target += 1
-        #     attack_url = BattleHandler.PLAYER_ATTACK_URL_TEMPLATE.format(
-        #         self.current_target, BattleHandler.AllyId.ROHANE.value
-        #     )
-        #     self.battle_page.go_to_url_and_wait_navigation(attack_url)
-        # # raise ValueError(
-        # #     f"We got a potion ID of: {best_potion_id}. Double check if you have any potions!"
-        # )
 
         # Try attacking the first monster -> if defeated, increment the id and try again, etc.
         attack_url = BattleHandler.PLAYER_ATTACK_URL_TEMPLATE.format(
@@ -427,7 +344,6 @@ class BattleHandler:
                     logger.warning(
                         "The battle ended but we were still trying to cast on a target! Returning control from Mipsy turn call."
                     )
-                    # self.end_battle()
                     break
                 else:
                     self.current_target += 1
@@ -569,17 +485,6 @@ class BattleHandler:
             self.battle_page.go_to_url_and_wait_navigation(single_heal_url)
             self.velm_turns_elapsed_counter += 1
 
-        # while self.battle_page.has_attacked_invalid_target():
-        #     if self.is_battle_over():
-        #         logger.warning(
-        #             "The battle ended but we were still trying to attack a target! Returning control from Talinia's turn call.")
-        #         break
-        #     else:
-        #         self.current_target += 1
-        #         attack_url = BattleHandler.PLAYER_ATTACK_URL_TEMPLATE.format(
-        #             self.current_target, BattleHandler.AllyId.VELM.value
-        #         )
-        #         self.battle_page.go_to_url_and_wait_navigation(attack_url)
         return self.battle_page
 
     # NOTE: The resulting page after using this method is NOT a BattlePage instance

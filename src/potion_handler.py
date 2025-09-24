@@ -20,7 +20,7 @@ class PotionHandler:
 
     @staticmethod
     def get_best_potions_by_efficiency(
-        character_current_hp: int, character_max_hp: int
+            character_current_hp: int, character_max_hp: int
     ) -> list[tuple[int, str]]:
         """
         Go through all potions and return the in order of healing efficiency for the given HP values.
@@ -33,11 +33,3 @@ class PotionHandler:
         ]
         potion_waste_list.sort(key=lambda x: x[2])
         return [(pid, name) for pid, name, _ in potion_waste_list]
-
-
-# Basic test code
-# if __name__ == "__main__":
-#     current_hp = 65
-#     max_hp = 180
-#     sorted_potions = PotionHandler.get_best_potions_by_efficiency(current_hp, max_hp)
-#     print(sorted_potions)

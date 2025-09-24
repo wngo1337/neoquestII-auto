@@ -233,7 +233,6 @@ class Autoplayer:
             "515155553555535533333666666333335555511117111555113555366666666666222222222222222222222226663"
         )
 
-        # CANNOT IMPLEMENT UNTIL WE FIX UP THE ROHANE TURN CODE AND MIPSY TURN CODE
         # Recruit Mipsy and then try to invest her skillpoints into direct damage
         self.npc_handler.recruit_mipsy()
 
@@ -246,6 +245,7 @@ class Autoplayer:
         )
 
     def complete_act1_sand_grundo(self) -> None:
+        # Train in grass area for a bit
         self.follow_path("48882")
         self.grind_battles(200, "88")
 
@@ -278,20 +278,8 @@ class Autoplayer:
         self.follow_path(
             "11177444444444478444448482633336622222222662666222222882222222888822222224444477777"
         )
+        # I don't actually think we need to grind here, but ok
         self.grind_battles(100)
-
-        # # Rohane: 13 stun, 2 haste
-        # self.skillpoint_handler.try_spend_multiple_skillpoints(
-        #     SkillpointHandler.AllyType.ROHANE,
-        #     SkillpointHandler.RohaneSkill.MELEE_HASTE.value,
-        #     2,
-        # )
-        # # mipsy: 13 direct damage, 2 melee defense
-        # self.skillpoint_handler.try_spend_multiple_skillpoints(
-        #     SkillpointHandler.AllyType.MIPSY,
-        #     SkillpointHandler.MipsySkill.MELEE_DEFENSE.value,
-        #     2,
-        # )
 
         self.follow_path("77777744488822266666666666638888")
         # Must talk to the ghost to gain entry
@@ -315,7 +303,6 @@ class Autoplayer:
         self.follow_path("8888882844444444888882222228882222222284444444484")
 
         # Beat the Mutant Sand Grundo and enter the portal
-        # NOTE: NOT SURE HOW MANY STEPS WE NEED TO TAKE!!!
         self.follow_path("444")
 
     def complete_act1_ramtor1(self) -> None:
@@ -334,6 +321,7 @@ class Autoplayer:
             2,
         )
 
+        # Exit the tower and walk all the way to next town
         self.follow_path(
             "22222222222287744447771177828448222222263333663333351151111562651111111174444477771717111111117777777447"
             "444448888888884888444444444777"
@@ -369,8 +357,6 @@ class Autoplayer:
         # Exit the castle, then walk to the tower
         self.follow_path("844")
         self.follow_path("63333333333333366633333333333335555555555535335")
-        # Train outside for a few levels - maybe not needed actually
-        # self.grind_battles(100)
         self.follow_path("1111115533")
         self.grind_battles(160)
 
@@ -387,6 +373,7 @@ class Autoplayer:
             2,
         )
 
+        # Navigate through tower all the way to Ramtor
         self.follow_path(
             "356228866334744477711177744477715515333666222366333551111115848888884444447446662666663332223"
         )
@@ -396,6 +383,7 @@ class Autoplayer:
         """
         Go to the cave and beat Leximp to get the wordstone. It is too much of a pain to actually buy stuff though.
         """
+
         self.follow_path("44")
         self.follow_path(
             "7844447747444444884882888822888815555555551155533336363363333356"
@@ -415,6 +403,7 @@ class Autoplayer:
             2,
         )
 
+        # Walk through Terror Mountain overworld to cave entrance
         self.follow_path(
             "78444477474444441774474444444444447744444477444444444444444444444444444444477777777777771"
         )
@@ -436,6 +425,7 @@ class Autoplayer:
             2,
         )
 
+        # Long walk through cave and all the way out to Talinia at inn
         self.follow_path(
             "1555533336663633633333555353533355777774444447444447774775553336335553353577711555177444447"
             "444448447471111111117771178"
@@ -457,6 +447,7 @@ class Autoplayer:
         )
 
     def complete_act2_kolvars_and_grind(self) -> None:
+        # Leave town and walk to Kolvars
         self.follow_path("553")
         self.follow_path(
             "55551155555555555555335333355333333555636333333355155366633336633363511777155366366626"
@@ -624,8 +615,7 @@ class Autoplayer:
         self.follow_path("5")
         self.follow_path("111111")
 
-        # EXTREMELY IMPORTANT NOTE: I DON'T THINK THIS ENDS AT THE STARTING POSITION OF THE NEXT SCRIPT!
-        # MAY NEED TO WALK RIGHT TWO STEPS
+        # MAY NEED TO WALK RIGHT TWO STEPS TO NEXT STARTING LOCATION
         self.follow_path("44")
 
     def complete_act3_gebarn(self) -> None:
@@ -667,6 +657,7 @@ class Autoplayer:
         self.follow_path("44")
 
     def complete_act3_revenant(self) -> None:
+        # Walk from Gebarn portal exit to Velm
         self.follow_path("333555333333333")
         self.follow_path("11111111117747477111155115551711151144884")
 
@@ -748,6 +739,7 @@ class Autoplayer:
             1,
         )
 
+        # Walk from medallion location all the way to Coltzan
         self.follow_path(
             "22888888888888888888822222222228888888888444488888888882222222266663333355533551111111111111111111111111111555533333551111153351"
         )
@@ -757,6 +749,7 @@ class Autoplayer:
         self.npc_handler.talk_with_coltzan()
         self.follow_path("75")
         self.npc_handler.get_medallion_centrepiece()
+        # Back to second medallion location?
         self.follow_path(
             "2222848882222844884488822222222222222222222222262288884844444477771111111155555555555555511111111"
         )
@@ -877,6 +870,7 @@ class Autoplayer:
         self.skillpoint_handler.try_spend_multiple_skillpoints(
             SkillpointHandler.AllyType.VELM, SkillpointHandler.VelmSkill.MELEE_DEFENSE.value, 2)
 
+        # Walk all the way through the rest of the funhouse and talk to everyone
         self.follow_path(
             "336633555117884444447777753366333553336222284862662844444717488847115117111111533663336263511174444411111")
         # NEED TO TALK TO THE BRAIN TREE!!!
@@ -908,6 +902,7 @@ class Autoplayer:
         self.skillpoint_handler.try_spend_multiple_skillpoints(
             SkillpointHandler.AllyType.VELM, SkillpointHandler.VelmSkill.MELEE_DEFENSE.value, 1)
 
+        # Walk up all the stairs to Nox
         self.follow_path(
             "4442226336663366447557753351114482222633628444444777115512263622226555111717748888226715333335")
 
@@ -920,6 +915,7 @@ class Autoplayer:
         self.follow_path("44")
 
     def complete_act5_fallen_angel(self) -> None:
+        # Walk from starting location to Fallen Angel
         self.follow_path("2222228888288888844444888888822222228688")
         self.follow_path("71")
         self.follow_path("66622222626262622666222288228222266633662888888447744482")
@@ -946,6 +942,7 @@ class Autoplayer:
         self.follow_path("33662222228882662226222844444474884447774482274777444488884")
 
     def complete_act5_devilpuss(self) -> None:
+        # Walk halfway through Devilpuss location and train
         self.follow_path("48888444471117711747153333333335111111111174444444444444444444444444444822266222226333")
         self.grind_battles(80)
         # Rohane: 13 stun, 13 haste, 13 damage, 10 crit
@@ -966,6 +963,7 @@ class Autoplayer:
             SkillpointHandler.AllyType.VELM,
             SkillpointHandler.VelmSkill.MELEE_DEFENSE.value, 3)
 
+        # Walk the rest of the location and fight
         self.follow_path(
             "3336622226636362222663333622288444482222844444444444444444444444447111111115333351111111774444")
         self.follow_path("4")
@@ -1054,6 +1052,7 @@ class Autoplayer:
 
     def complete_act5_finale(self) -> None:
         self.npc_handler.talk_with_stenvela()
+        # Walk through the huge maze to the next floor and to the next NPC
         self.follow_path(
             "44444447111177774471557444828711111533335555335111744444444447111111111153333333362222226333622222636636266263533368222284482222222"
             "63366333333335551111111111744784471111533351774877111555336665111111782877711174444447448444488211")
@@ -1077,4 +1076,5 @@ class Autoplayer:
             "222222222263515711571533362222666226535511111111144863622284444822228444444451111111551533622222222263336")
         # Rest with Lyra - no need to buy potions since we are maxed from before
         self.npc_handler.talk_with_lyra()
+        # One step before Terask II - leave to user to fight
         self.follow_path("511111111111528888888")

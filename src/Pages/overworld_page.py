@@ -25,8 +25,6 @@ class OverworldPage(NeopetsPage):
         r"https://www.neopets.com/games/nq2/nq2.phtml?act=travel&mode=2"
     )
 
-    MAIN_GAME_URL = r"https://www.neopets.com/games/nq2/nq2.phtml"
-
     MOVEMENT_URL_TEMPLATE = (
         r"https://www.neopets.com/games/nq2/nq2.phtml?act=move&dir={0}"
     )

@@ -1,12 +1,13 @@
 import logging
 from enum import Enum, auto
 
+from src.AutoplayerBaseHandler import AutoplayerBaseHandler
 from src.Pages.neopets_page import NeopetsPage
 
 logger = logging.getLogger(__name__)
 
 
-class SkillpointHandler:
+class SkillpointHandler(AutoplayerBaseHandler):
     class AllyType(Enum):
         ROHANE = auto()
         MIPSY = auto()
@@ -51,8 +52,6 @@ class SkillpointHandler:
         MELEE_DEFENSE = 9601
         CASTING_HASTE = 9602
 
-    MAIN_GAME_URL = "https://www.neopets.com/games/nq2/nq2.phtml"
-
     # Everything is filled besides the skillpoint ID here
     # e.g. crit is 9101
     ROHANE_SKILLPOINT_SPEND_TEMPLATE = r"https://www.neopets.com/games/nq2/nq2.phtml?act=skills&buy_char=1&buy_char=1&confirm=1&skopt_{0}=1"
@@ -93,18 +92,3 @@ class SkillpointHandler:
         logger.info(f"Attempting to spend {num_points} points for ally: {ally}")
         for i in range(num_points):
             self.try_spend_skillpoint(ally, skill_id)
-
-        # if ally is SkillpointHandler.AllyType.ROHANE:
-        #     rohane_skillpoint_spend_url = self.ROHANE_SKILLPOINT_SPEND_TEMPLATE.format(skill_id)
-        #     self.overworld_page.go_to_url_and_wait_navigation(
-        #         rohane_skillpoint_spend_url
-        #     )
-        #     # TODO: Probably find a way to identify if we actually spent a skillpoint here...
-        #     logger.info("Returning to main game page")
-        #     self.overworld_page.go_to_url_and_wait_navigation(SkillpointHandler.MAIN_GAME_URL)
-        #     return True
-        # elif ally is SkillpointHandler.AllyType.MIPSY:
-        #     skillpoint_spend_url = self.MIPSY_SKILLPOINT_SPEND_TEMPLATE(skill_id)
-        #     self.overworld_page.go_to_url_and_wait_navigation(skillpoint_spend_url)
-        # else:
-        #     logger.error("We did not receive a valid ally or skill to spend a skillpoint for!")

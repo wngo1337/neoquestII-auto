@@ -1,15 +1,14 @@
 import logging
 from typing import List
 
+from src.AutoplayerBaseHandler import AutoplayerBaseHandler
 from src.Pages.neopets_page import NeopetsPage
 from src.Pages.overworld_page import OverworldPage
 
 logger = logging.getLogger(__name__)
 
 
-class NpcHandler:
-    MAIN_GAME_URL = r"https://www.neopets.com/games/nq2/nq2.phtml"
-
+class NpcHandler(AutoplayerBaseHandler):
     # MERIDELL KEY NPCs
     # You only need to be in range to use these options
     # Will use this one A LOT in the early game
@@ -213,7 +212,7 @@ class NpcHandler:
             self.npc_page.go_to_url_and_wait_navigation(link)
 
         logger.info("NPC interactions completed, returning to Overworld.")
-        self.npc_page.go_to_url_and_wait_navigation(self.MAIN_GAME_URL)
+        self.npc_page.go_to_url_and_wait_navigation(NpcHandler.MAIN_GAME_URL)
         # After all NPC interaction links visited, return to OverworldPage
         return OverworldPage(self.npc_page.page_instance)
 
