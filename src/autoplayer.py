@@ -36,7 +36,6 @@ class Autoplayer:
         if self.overworld_handler.is_overworld():
             # Need to actually ensure that we are on the overworld to use any game section completion methods
 
-            # WE NEED TO ENSURE THAT LOGIN HANDLER IS LOADED BEFORE WE LOAD UP THE PAGE REFERENCE
             self.battle_handler = BattleHandler(self.current_page, in_battle=False)
         else:
             self.battle_handler = BattleHandler(self.overworld_handler.overworld_page)

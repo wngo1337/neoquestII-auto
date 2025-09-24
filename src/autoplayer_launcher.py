@@ -33,7 +33,7 @@ if len(subdirs) == 1:
     full_adblock_path = os.path.join(adblock_container_path, actual_adblock_folder_name)
     logger.info(f"Full Adblock directory path: {full_adblock_path}")
 else:
-    logger.info(
+    raise ValueError(
         "AdblockDir contains multiple or no directories. It should only contain the Adblock extension folder!"
     )
 

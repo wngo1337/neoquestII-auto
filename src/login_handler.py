@@ -46,17 +46,27 @@ class LoginHandler:
         # Not sure if this is even necessary since we return the page at end of every method
         self.neopets_page = neopets_page
 
+        if os.path.getsize(user_info_file_path) == 0:
+            raise ValueError("The user info file is empty! Please fill out your login details.")
+
         with open(
                 user_info_file_path,
                 "r",
         ) as f:
+            line_count = sum(1 for line in f)
             if self.use_neopass:
+                if line_count != 3:
+                    raise ValueError(
+                        "Neopass login requires three lines: Neopass username, Neopass password, Neopets username")
+
                 self.neopass_email = f.readline().strip()
                 self.neopass_password = f.readline().strip()
                 self.username = f.readline().strip()
 
                 logger.info("Reading Neopass login info...")
             else:
+                if line_count != 2:
+                    raise ValueError("Traditional login requires two lines: Neopets username, Neopets password")
                 self.username = f.readline().strip()
                 self.user_password = f.readline().strip()
 
