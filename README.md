@@ -75,10 +75,13 @@ actual extension info.
 If there is a better way to block ads, I would really love to know. However, I do not know one
 right now.
 
-On Linux/Mac, the folder should be located at: ~/\<
+On Linux, the folder should be located at: ~/\<
 YourUsername/.config/google-chrome/Default/Extensions/ddkjiahejlhfcafbddmgiahcphecmpfh
 
 ![AdblockFolderLocation](ReadmeResources/adblock_folder_location.png)
+
+On Mac, it should be something similar like: ~/Library/Application
+Support/Google/Chrome/Default/Extensions/ddkjiahejlhfcafbddmgiahcphecmpfh
 
 I'm not actually sure where this container folder is located on Windows. My guess is: C:
 \\Users\<YourUsername>\\AppData\\Local\\Google\\Chrome\\User
