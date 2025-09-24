@@ -5,9 +5,12 @@
 This is an automated game player and very obviously not permitted by site rules. Use at your own
 risk, as I will not be held liable if you get iced! Use sensibly, and take breaks between usages.
 
-By the way, this is functional but has its share of issues. 85% of the time, it works 100% of the
-time. Sometimes the Neopets site may hiccup and submit actions more than once, causing desync
-between the program and your game. Make sure the site is stable and try to **play during off-peak
+By the way, this is very much a work in progress, and it is quite fragile since it relies on pretty
+specific HTML element patterns in some cases. I would say 85% of the time, it
+works 100% of the time. Sometimes the Neopets site may hiccup and submit actions more than once,
+causing desync
+between the program and your game. That's the nature of using UI automation libraries I guess. Make
+sure the site is stable and try to **play during off-peak
 hours** with a **stable internet connection** for best results. If your connection drops, good luck
 finding your way back to the next starting point.
 
@@ -20,6 +23,12 @@ Neoquest II Auto is exactly what it sounds like: an autoplayer for the PHTML gam
 neopets.com. It is meant to help you grab all the game trophies and minimize the time you have to
 spend clicking away. What would normally take you weeks should now ideally take you hours with
 minimal user interaction.
+
+You can also just use it for grinding if you don't trust the navigation or want to play manually.
+
+## Requirements
+
+- Python >= 3.10
 
 ## Features
 
@@ -66,14 +75,14 @@ actual extension info.
 If there is a better way to block ads, I would really love to know. However, I do not know one
 right now.
 
-On Linux/Mac, the folder should be located at: ~/<
+On Linux/Mac, the folder should be located at: ~/\<
 YourUsername/.config/google-chrome/Default/Extensions/ddkjiahejlhfcafbddmgiahcphecmpfh
 
 ![AdblockFolderLocation](ReadmeResources/adblock_folder_location.png)
 
 I'm not actually sure where this container folder is located on Windows. My guess is: C:
-\Users\<YourUsername>\AppData\Local\Google\Chrome\User
-Data\Default\Extensions\ddkjiahejlhfcafbddmgiahcphecmpfh
+\\Users\<YourUsername>\\AppData\\Local\\Google\\Chrome\\User
+Data\\Default\\Extensions\\ddkjiahejlhfcafbddmgiahcphecmpfh
 
 Inside this folder, you will find a folder with a name of something like 2025.911.1335_0. Copy this
 folder itself into neoquestII-auto/RequiredData/AdblockDir
@@ -117,6 +126,19 @@ Each act comes with its own set of completion methods, with the next one startin
 previous one finishes. Ideally, you run them all in order and never have to interact with the game
 **besides equipping weapons and armour from bosses after each script finishes running**. Given that
 drops are RNG, it's easier if you just do it manually.
+
+## Troubleshooting
+
+**My program desynced and isn't following the correct path anymore!**
+
+I know, that sucks. Kill the program with Ctrl-C, walk back to the starting point of the method you
+were running, and run the method again.
+
+**Rohane died and I respawned and the autoplayer is continuing to travel!**
+
+It's actually pretty common at level 1 if you get unlucky, and only at level 1. Again, kill the
+program rather than respawning first, and go back to the proper starting point before running the
+method again.
 
 ## Starting Locations For Each Completion Method
 
@@ -178,62 +200,56 @@ Locations below this still need to be added later.
 
 #### Grind + Defeat Gebarn II
 
-![Act3Method2]()
+![Act3Method2](<>)
 
 #### Get Velm + Defeat Revenant + Gemstone Stuff
 
-![Act3Method3]()
+![Act3Method3](<>)
 
 #### Defeat Coltzan + Do Gemstone Stuff
 
-![Act3Method4]()
+![Act3Method4](<>)
 
 #### Go To Pyramid and Fight Anubits
 
-![Act3Method5]()
+![Act3Method5](<>)
 
 ### Act 4 Sections
 
 #### Defeat Meuka
 
-![Act4Method1]()
+![Act4Method1](<>)
 
 #### Defeat Spider Grundo
 
-![Act4Method2]()
+![Act4Method2](<>)
 
 #### Complete Four Faeries Sequence + Boss Fight
 
-![Act4Method3]()
+![Act4Method3](<>)
 
 #### Defeat Hubrid Nox
 
-![Act4Method4]()
+![Act4Method4](<>)
 
 #### Defeat Esophagor
 
-![Act4Method5]()
+![Act4Method5](<>)
 
 ### Act 5 Sections
 
 #### Defeat Fallen Angel
 
-![Act5Method1]()
+![Act5Method1](<>)
 
 #### Defeat Devilpuss
 
-![Act5Method2]()
+![Act5Method2](<>)
 
 #### Complete Faerie Thief Questline and All Running Around
 
-![Act5Method3]()
+![Act5Method3](<>)
 
 #### Complete Act 5 Finale -> Does NOT Include King Terask II Fight
 
-![Act5Method4]()
-
-## Built With
-
-- Python
-- Playwright
-
+![Act5Method4](<>)
